@@ -97,7 +97,7 @@
             "appimage": "1.0.3"
         },
         "linux": {
-            "icon": "build/icon.svg",
+            "icon": "build/icon.png",
             "category": "Network",
             "maintainer": "bliper2",
             "target": [
@@ -155,8 +155,7 @@
                 "NSMicrophoneUsageDescription": "This app needs access to the microphone",
                 "NSCameraUsageDescription": "This app needs access to the camera",
                 "com.apple.security.device.audio-input": true,
-                "com.apple.security.device.camera": true,
-                "CFBundleIconName": "Icon"
+                "com.apple.security.device.camera": true
             },
             "notarize": false
         },

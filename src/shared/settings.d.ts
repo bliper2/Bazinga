@@ -76,6 +76,8 @@ export interface State {
     linuxAutoStartEnabled?: boolean;
 
     equicordDir?: string;
+    /** Size and modification time of the bundled Equicord build that was last copied into place. */
+    equicordSeed?: string;
 
     launchArguments?: string;
 

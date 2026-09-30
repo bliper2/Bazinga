@@ -4,11 +4,12 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { copyFileSync, existsSync } from "original-fs";
+import { copyFileSync, existsSync, statSync } from "original-fs";
 import { join } from "path";
 import { EQUICORD_ASAR_URL } from "shared/repo";
 
 import { USER_AGENT } from "../constants";
+import { State } from "../settings";
 import { SEED_EQUICORD_ASAR, VENCORD_DIR } from "../vencordDir";
 import { downloadFile, fetchie } from "./http";
 
@@ -45,13 +46,22 @@ export function isValidVencordInstall(dir: string) {
     return existsSync(join(dir, "equibop/main.js"));
 }
 
-export async function ensureVencordFiles() {
-    if (existsSync(VENCORD_DIR)) return;
+// Install the Equicord build shipped with the app when it is new, for example after an app update.
+// A build downloaded by Equicord's own updater is kept until the app ships a different one.
+function installSeedIfChanged() {
+    if (State.store.equicordDir || !existsSync(SEED_EQUICORD_ASAR)) return false;
 
-    if (existsSync(SEED_EQUICORD_ASAR)) {
-        copyFileSync(SEED_EQUICORD_ASAR, VENCORD_DIR);
-        return;
-    }
+    const { size, mtimeMs } = statSync(SEED_EQUICORD_ASAR);
+    const seedId = `${size}-${Math.round(mtimeMs)}`;
+    if (State.store.equicordSeed === seedId && existsSync(VENCORD_DIR)) return true;
+
+    copyFileSync(SEED_EQUICORD_ASAR, VENCORD_DIR);
+    State.store.equicordSeed = seedId;
+    return true;
+}
+
+export async function ensureVencordFiles() {
+    if (installSeedIfChanged() || existsSync(VENCORD_DIR)) return;
 
     await downloadVencordAsar();
 }
