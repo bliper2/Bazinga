@@ -1,0 +1,22 @@
+[data-bz-collapse="collapsed"] {
+    position: relative;
+    max-height: calc(var(--bz-collapse-lines, 15) * 1.375rem);
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* A solid pill instead of a fade, so it stays readable with any theme's chat background. */
+[data-bz-collapse="collapsed"]::after {
+    content: "Show full message";
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: var(--brand-500, #5865f2);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    transform: translateX(-50%);
+    box-shadow: 0 2px 6px rgb(0 0 0 / 35%);
+}

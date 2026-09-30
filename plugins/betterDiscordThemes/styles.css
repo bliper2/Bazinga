@@ -1,0 +1,78 @@
+.bz-bdt-filters {
+    display: grid;
+    grid-template-columns: 1fr 180px 180px;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.bz-bdt-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+}
+
+.bz-bdt-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    background: var(--background-base-lower, var(--background-secondary));
+}
+
+.bz-bdt-thumb {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: var(--background-base-lowest, var(--background-tertiary));
+}
+
+.bz-bdt-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 12px 12px;
+}
+
+.bz-bdt-title {
+    color: var(--header-primary, var(--text-strong));
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.bz-bdt-meta {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.bz-bdt-desc {
+    display: -webkit-box;
+    flex: 1;
+    overflow: hidden;
+    color: var(--text-default, var(--text-normal));
+    font-size: 13px;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.bz-bdt-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.bz-bdt-tag {
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--text-muted);
+    background: var(--background-mod-subtle, var(--background-modifier-accent));
+    font-size: 11px;
+}
+
+.bz-bdt-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}

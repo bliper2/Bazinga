@@ -13,7 +13,8 @@ Bazinga is a fork of [Equibop](https://github.com/Equicord/Equibop), which is a 
 
 ## Features
 
-- Equicord preinstalled, including the Bazinga plugins from [`plugins/`](plugins)
+- Equicord preinstalled, including the Bazinga plugins from [`plugins/`](plugins). Search the Plugins page for
+  "bazinga" to list them.
 - Discord Stable, PTB and Canary. Pick one on first launch or under **Settings → Bazinga Settings → Discord Branch**.
   Switching reloads the client right away. Each branch keeps its own login.
 - App updates through GitHub Releases (electron-updater)
@@ -21,8 +22,17 @@ Bazinga is a fork of [Equibop](https://github.com/Equicord/Equibop), which is a 
 - The installer ships an Equicord build, so the first launch works offline
 - Everything from Equibop: Linux screen share with audio, Wayland, arRPC, tray customization
 
-Planned (see the roadmap below): performance settings, telemetry blocking, reload shortcuts, plugin and theme manager
-additions, BetterDiscord theme browser, custom plugins.
+### Bazinga plugins
+
+| Plugin                  | What it does                                                                                    | On by default |
+| ----------------------- | ----------------------------------------------------------------------------------------------- | ------------- |
+| **BetterDiscordThemes** | Browse, search, preview and install every theme from the BetterDiscord theme store. Open it from Settings, BetterDiscord Themes | Yes |
+| **LinkGuard**           | Warns before opening links that imitate other sites, hide their real address or point to raw IPs. Works offline | Yes |
+| **ChannelNotes**        | Private notes per channel or DM, from a button in the channel toolbar                          | No            |
+| **CollapseLong**        | Collapses very long messages. Click one to expand it                                            | No            |
+| **PerfOverlay**         | Overlay with FPS, JavaScript heap, page size and blocking tasks                                 | No            |
+
+Planned (see the roadmap below): performance settings, telemetry blocking, reload shortcuts, more plugins.
 
 ## Setup
 
@@ -110,14 +120,23 @@ If Equicord changes its pnpm version, run `bun add -d pnpm@<version>` to match i
 
 ## Writing plugins
 
-The plugin API, a template and a guide arrive in Phase 4. Until then, a Bazinga plugin is a normal Equicord user
-plugin placed in its own folder under `plugins/`.
+A Bazinga plugin is an Equicord user plugin in its own folder under `plugins/`. Import `definePlugin` from
+`../_bazinga` instead of `@utils/types`: it adds the Bazinga author and the "bazinga" search term. Keep `name` as the
+first property with a plain string value, because Equicord's build reads it from the source. Code that needs the
+main process (network requests without CORS, file access) goes in `native.ts`. See
+[`plugins/betterDiscordThemes`](plugins/betterDiscordThemes) for an example.
+
+Wrap DOM listeners, timers and observers with `guard()` from `../_bazinga`, so an error is logged instead of breaking
+Discord. Wrap React components with `ErrorBoundary.wrap`.
+
+A full template and guide arrive in Phase 4.
 
 ## Roadmap
 
 - [x] Phase 2: base client, Equicord injection, app and Equicord auto-update, PTB and Canary
-- [ ] Phase 3: performance layer, hot reload, plugin manager and theme manager additions, BetterDiscord theme browser
-- [ ] Phase 4: plugin API, template, custom plugins
+- [x] BetterDiscord theme browser and the first 4 custom plugins (moved ahead of Phase 3)
+- [ ] Phase 3: performance layer, hot reload, plugin manager and theme manager additions
+- [ ] Phase 4: plugin template and guide, remaining custom plugins
 
 ## License
 

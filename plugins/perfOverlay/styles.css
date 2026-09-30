@@ -1,0 +1,35 @@
+.bz-perf-overlay {
+    position: fixed;
+    z-index: 10000;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: rgb(0 0 0 / 70%);
+    color: #7ee787;
+    font: 11px/1.4 var(--font-code, monospace);
+    white-space: pre;
+    pointer-events: none;
+}
+
+.bz-perf-overlay[data-slow="true"] {
+    color: #ffa657;
+}
+
+.bz-perf-overlay[data-position="bottom-right"] {
+    right: 8px;
+    bottom: 8px;
+}
+
+.bz-perf-overlay[data-position="bottom-left"] {
+    bottom: 8px;
+    left: 8px;
+}
+
+.bz-perf-overlay[data-position="top-right"] {
+    top: 40px;
+    right: 8px;
+}
+
+.bz-perf-overlay[data-position="top-left"] {
+    top: 40px;
+    left: 8px;
+}
