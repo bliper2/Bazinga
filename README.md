@@ -1,109 +1,125 @@
-# Equibop [<img src="/static/icon.png" width="225" align="right" alt="Equibop">](https://github.com/Equicord/Equibop)
+# Bazinga
 
-[![Equicord](https://img.shields.io/badge/Equicord-grey?style=flat)](https://github.com/Equicord/Equicord)
-[![Tests](https://github.com/Equicord/Equibop/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/Equicord/Equibop/actions/workflows/test.yml)
-[![Discord](https://img.shields.io/discord/1173279886065029291.svg?color=768AD4&label=Discord&logo=discord&logoColor=white)](https://equicord.org/discord)
+Bazinga is a custom Discord desktop client for Windows, macOS and Linux. It loads Discord's web client in its own
+Electron shell with [Equicord](https://github.com/Equicord/Equicord) built in and enabled by default, so you do not
+need to patch the official Discord app.
 
-Equibop is a fork of [Vesktop](https://github.com/Vencord/Vesktop).
+Bazinga is a fork of [Equibop](https://github.com/Equicord/Equibop), which is a fork of
+[Vesktop](https://github.com/Vencord/Vesktop). See [CREDITS.md](CREDITS.md).
 
-You can join our [discord server](https://equicord.org/discord) for commits, changes, chat or even support.<br></br>
+> [!WARNING]
+> Client modifications are against Discord's Terms of Service. Discord has not been known to ban for them, but you use
+> Bazinga at your own risk.
 
-**Main features**:
-- Equicord preinstalled
-- Much more lightweight and faster than the official Discord app
-- Linux Screenshare with sound & wayland
-- Much better privacy, since Discord has no access to your system
+## Features
 
-**Extra included changes**
+- Equicord preinstalled, including the Bazinga plugins from [`plugins/`](plugins)
+- Discord Stable, PTB and Canary. Pick one on first launch or under **Settings → Bazinga Settings → Discord Branch**.
+  Switching reloads the client right away. Each branch keeps its own login.
+- App updates through GitHub Releases (electron-updater)
+- Equicord updates on its own, from **Settings → Equicord → Updater**, without reinstalling the app
+- The installer ships an Equicord build, so the first launch works offline
+- Everything from Equibop: Linux screen share with audio, Wayland, arRPC, tray customization
 
-- Tray Customization with voice detection and notification badges
-- Command-line flags to toggle microphone and deafen status (Linux)
-- Custom Arguments from [this PR](https://github.com/Equicord/Equibop/pull/46)
-- arRPC-bun with debug logging support https://github.com/Creationsss/arrpc-bun
+Planned (see the roadmap below): performance settings, telemetry blocking, reload shortcuts, plugin and theme manager
+additions, BetterDiscord theme browser, custom plugins.
 
-**Not fully Supported**:
-- Global Keybinds (Windows/macOS - use command-line flags on Linux instead)
+## Setup
 
-## Equibop Arguments
-> [!NOTE]
-> For the full list of supported flags and how to apply them, see the
-[Tips & Tricks](https://equibop.org/wiki/linux/tips/) page on the wiki!
+You need:
 
-### Quick reference
+- [Git](https://git-scm.com/)
+- [Node.js](https://nodejs.org/) 22 or newer
+- [Bun](https://bun.sh/) 1.3 or newer (`npm install -g --allow-scripts=bun bun`)
+- Linux only: `libglib2.0-dev` (or your distribution's equivalent)
 
-| Flag                            | Description                             |
-|---------------------------------|-----------------------------------------|
-| `--ozone-platform=wayland`      | Force native Wayland                    |
-| `--ozone-platform=x11`          | Force XWayland                          |
-| `--no-sandbox`                  | Disable Chromium sandbox (use with caution) |
-| `--force_high_performance_gpu`  | Prefer discrete GPU                     |
-| `--start-minimized`             | Launch minimized to tray                |
-| `--toggle-mic`                  | Toggle mic (bind to shortcuts)          |
-| `--toggle-deafen`               | Toggle deafen (bind to shortcuts)       |
-| `--toggle-vad`                  | Toggle Voice Activity Detection (Voice Activity <-> Push To Talk) |
-
-### Persistent flags
-
-Add flags to `${XDG_CONFIG_HOME}/equibop-flags.conf` — one per line, lines starting with `#` are comments.
-
-## Installing
-Check the [Releases](https://github.com/Equicord/Equibop/releases) page
-
-OR
-
-Check The Downloads from the [website](https://equibop.org/install)
-
-### Linux
-
-[![Equibop](https://img.shields.io/badge/AVAILABLE_ON_THE_AUR-333232?style=for-the-badge&logo=arch-linux&logoColor=0F94D2&labelColor=%23171717)](https://aur.archlinux.org/packages?O=0&K=equibop)
-<br>
-<!-- <a href="https://flathub.org/apps/io.github.equicord.equibop">
-  <img src="https://flathub.org/api/badge?svg" alt="Download on Flathub" style="width:220px; height:auto;">
-</a> -->
-
-#### Community packages
-
-Below you can find unofficial packages created by the community. They are not officially supported by us, so before reporting issues, please first confirm the issue also happens on official builds. When in doubt, consult with their packager first. The AppImage should work on any distro that supports them, so I recommend you just use that instead!
-
-- Arch Linux: [Equibop on the Arch user repository](https://aur.archlinux.org/packages?K=equibop)
-- Void Linux: [Equibop on the Void repository](https://void.creations.works/)
-- NixOS: `nix-shell -p equibop`
-
-## Building from Source
-
-You need to have the following dependencies installed:
-- [Git](https://git-scm.com/downloads)
-- [Bun](https://bun.sh)
-
-Packaging will create builds in the dist/ folder
+Clone with the Equicord submodule and install dependencies:
 
 ```sh
-git clone https://github.com/Equicord/Equibop
-cd Equibop
-
-# Install Dependencies
+git clone --recurse-submodules https://github.com/bliper2/Bazinga
+cd Bazinga
 bun install
-
-# Either run it without packaging
-bun start
-
-# Or package (will build packages for your OS)
-bun package
-
-# Or only build the Linux Pacman package
-bun package --linux pacman
-
-# Or package to a directory only
-bun package:dir
 ```
 
-## Building LibVesktop from Source
+If you already cloned without submodules, run `git submodule update --init`.
 
-This is a small C++ helper library Equibop uses on Linux to emit D-Bus events. By default, prebuilt binaries for x64 and arm64 are used.
+## Build and run
 
-If you want to build it from source:
-1. Install build dependencies:
-    - Debian/Ubuntu: `apt install build-essential python3 curl pkg-config libglib2.0-dev`
-    - Fedora: `dnf install @c-development @development-tools python3 curl pkgconf-pkg-config glib2-devel`
-2. Run `bun buildLibVesktop`
-3. From now on, building Equibop will use your own build
+```sh
+bun run buildEquicord   # build Equicord + our plugins into dist/equicord/equibop.asar
+bun start               # build the client and start it
+```
+
+When you run from source, the client loads `dist/equicord/equibop.asar` directly. After you change a plugin, run
+`bun run buildEquicord` again and reload the client (`Ctrl+Shift+R`).
+
+Other commands:
+
+| Command               | What it does                                             |
+| --------------------- | -------------------------------------------------------- |
+| `bun run start:dev`   | Start a development build                                |
+| `bun run test`        | Lint and type-check                                      |
+| `bun run package:dir` | Build an unpacked app in `dist/<platform>-unpacked`      |
+| `bun run package`     | Build installers for the current platform into `dist/`   |
+
+Set `EQUICORD_USER_DATA_DIR=/some/folder` to run with a separate profile, for example to test a clean first launch.
+
+## How the pieces fit
+
+```
+src/                  Electron shell (main process, preload, renderer settings page)
+equicord/             Git submodule: upstream Equicord, pinned to a release tag
+plugins/              Our Equicord plugins. Copied into equicord/src/userplugins at build time
+scripts/build/buildEquicord.mts
+                      Builds Equicord with our plugins and points its updater at this repo
+```
+
+Equicord is loaded from, in order:
+
+1. A custom folder set in **Bazinga Settings → Developer Options**
+2. When running from source: `dist/equicord/equibop.asar`
+3. `<user data>/sessionData/equicord.asar`. On first launch this is copied from the build shipped in the installer. If
+   that is missing, it is downloaded from the `equicord-latest` release.
+
+## Releases
+
+There are two release channels in this repository:
+
+- **App:** push a tag like `v0.1.0`. The `Release` workflow builds installers for all platforms and publishes them as a
+  draft release. Publish the draft on GitHub to make it available to the auto-updater. Bump `version` in
+  `package.json` before tagging.
+- **Equicord:** every push to `main` that changes `plugins/`, the `equicord` submodule or the Equicord build script
+  runs the `Equicord build` workflow. It replaces the asset on the `equicord-latest` prerelease. Clients pick it up
+  from Equicord's Updater tab. It is a prerelease so the app updater ignores it.
+
+Builds are not code-signed yet. Windows SmartScreen and macOS Gatekeeper will warn on install, and auto-update on
+macOS does not work without signing.
+
+## Updating upstream
+
+```sh
+git fetch upstream
+git merge upstream/main                        # Equibop changes
+
+cd equicord && git fetch --tags && git checkout <new tag> && cd ..
+git add equicord                               # Equicord bump
+bun run buildEquicord                          # fails loudly if our updater patch no longer applies
+```
+
+If Equicord changes its pnpm version, run `bun add -d pnpm@<version>` to match its `packageManager` field.
+
+## Writing plugins
+
+The plugin API, a template and a guide arrive in Phase 4. Until then, a Bazinga plugin is a normal Equicord user
+plugin placed in its own folder under `plugins/`.
+
+## Roadmap
+
+- [x] Phase 2: base client, Equicord injection, app and Equicord auto-update, PTB and Canary
+- [ ] Phase 3: performance layer, hot reload, plugin manager and theme manager additions, BetterDiscord theme browser
+- [ ] Phase 4: plugin API, template, custom plugins
+
+## License
+
+Bazinga is licensed under the [GNU General Public License v3.0 or later](LICENSE), like the projects it is built on.
+Source code for every release, including the exact Equicord commit used, is available in this repository.

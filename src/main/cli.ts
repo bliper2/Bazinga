@@ -102,7 +102,7 @@ const extraOptions = {
     "ozone-platform": {
         hidden: process.platform !== "linux",
         type: "string",
-        description: "Whether to run Equibop in Wayland or X11 (XWayland)",
+        description: "Whether to run Bazinga in Wayland or X11 (XWayland)",
         options: ["x11", "wayland"]
     }
 } satisfies Record<string, Option>;
@@ -140,13 +140,13 @@ export function checkCommandLineForHelpOrVersion() {
     const { help, version } = CommandLine.values;
 
     if (version) {
-        console.log(`Equibop v${app.getVersion()}`);
+        console.log(`Bazinga v${app.getVersion()}`);
         app.exit(0);
     }
 
     if (help) {
         const base = stripIndent`
-            Equibop v${app.getVersion()}
+            Bazinga v${app.getVersion()}
 
             Usage: ${basename(process.execPath)} [options] [url]
 
@@ -210,7 +210,7 @@ function checkCommandLineForToggleCommands() {
         app.exit(0);
     }
 
-    console.error("Equibop is not running. Toggle commands require a running instance.");
+    console.error("Bazinga is not running. Toggle commands require a running instance.");
     app.exit(1);
 }
 
@@ -228,7 +228,7 @@ function checkCommandLineForQueryCommands() {
         : getVoiceChannelName
           ? IpcCommands.QUERY_VOICE_CHANNEL_NAME
           : IpcCommands.QUERY_CALL_DURATION;
-    const responseFile = join(tmpdir(), `equibop-query-${Date.now()}-${process.pid}.tmp`);
+    const responseFile = join(tmpdir(), `bazinga-query-${Date.now()}-${process.pid}.tmp`);
 
     if (!app.requestSingleInstanceLock({ IS_DEV, query, responseFile })) {
         isQueryInstance = true;
@@ -259,7 +259,7 @@ function checkCommandLineForQueryCommands() {
         return true;
     }
 
-    console.error("Equibop is not running. Query commands require a running instance.");
+    console.error("Bazinga is not running. Query commands require a running instance.");
     app.exit(1);
 }
 
@@ -341,11 +341,11 @@ function checkForSecondInstance() {
 
     if (!app.requestSingleInstanceLock({ IS_DEV })) {
         if (!IS_DEV) {
-            console.log("Equibop is already running. Quitting...");
+            console.log("Bazinga is already running. Quitting...");
             app.exit(0);
         }
 
-        console.log("Equibop is already running. Quitting previous instance...");
+        console.log("Bazinga is already running. Quitting previous instance...");
     }
 
     setupSecondInstanceHandler();

@@ -17,7 +17,7 @@ export const DeveloperOptionsButton: SettingsComponent = ({ settings }) => {
 
 function openDeveloperOptionsModal(settings: Settings) {
     openModal(props => (
-        <Modal {...props} size="md" title="Equibop Developer Options">
+        <Modal {...props} size="md" title="Bazinga Developer Options">
             <div style={{ padding: "1em 0" }}>
                 <Heading tag="h5">Equicord Location</Heading>
                 <EquicordLocationPicker settings={settings} />
@@ -68,7 +68,7 @@ const EquicordLocationPicker: SettingsComponent = ({ settings }) => {
                                 break;
                             case "ok":
                                 Toasts.show({
-                                    message: "Equicord install changed. Fully restart Equibop to apply.",
+                                    message: "Equicord install changed. Fully restart Bazinga to apply.",
                                     id: Toasts.genId(),
                                     type: Toasts.Type.SUCCESS
                                 });

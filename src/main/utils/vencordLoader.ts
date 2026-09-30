@@ -4,11 +4,12 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { existsSync } from "fs";
+import { copyFileSync, existsSync } from "original-fs";
 import { join } from "path";
+import { EQUICORD_ASAR_URL } from "shared/repo";
 
 import { USER_AGENT } from "../constants";
-import { VENCORD_DIR } from "../vencordDir";
+import { SEED_EQUICORD_ASAR, VENCORD_DIR } from "../vencordDir";
 import { downloadFile, fetchie } from "./http";
 
 const API_BASE = "https://api.github.com";
@@ -37,12 +38,7 @@ export async function githubGet(endpoint: string) {
 }
 
 export async function downloadVencordAsar() {
-    await downloadFile(
-        "https://github.com/Equicord/Equicord/releases/latest/download/equibop.asar",
-        VENCORD_DIR,
-        {},
-        { retryOnNetworkError: true }
-    );
+    await downloadFile(EQUICORD_ASAR_URL, VENCORD_DIR, {}, { retryOnNetworkError: true });
 }
 
 export function isValidVencordInstall(dir: string) {
@@ -51,6 +47,11 @@ export function isValidVencordInstall(dir: string) {
 
 export async function ensureVencordFiles() {
     if (existsSync(VENCORD_DIR)) return;
+
+    if (existsSync(SEED_EQUICORD_ASAR)) {
+        copyFileSync(SEED_EQUICORD_ASAR, VENCORD_DIR);
+        return;
+    }
 
     await downloadVencordAsar();
 }

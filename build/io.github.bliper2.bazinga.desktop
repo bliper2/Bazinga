@@ -1,10 +1,10 @@
 [Desktop Entry]
-Name=Equibop
+Name=Bazinga
 GenericName=Internet Messenger
 Type=Application
-Exec=equibop %U
-Icon=org.equicord.equibop
+Exec=bazinga %U
+Icon=io.github.bliper2.bazinga
 Categories=Network;InstantMessaging;Chat;
-Keywords=discord;vencord;electron;chatequibop;
+Keywords=discord;equicord;electron;chat;bazinga;
 MimeType=x-scheme-handler/discord;
-StartupWMClass=equibop
+StartupWMClass=bazinga

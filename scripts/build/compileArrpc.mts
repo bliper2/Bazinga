@@ -90,7 +90,7 @@ for (const target of targetsToCompile) {
 	console.log(`  Output: ${outputPath}`);
 
 	try {
-		const cmd = `bun build ${ARRPC_ENTRY} --compile --target=${target.target} --outfile=${outputPath}`;
+		const cmd = `bun build "${ARRPC_ENTRY}" --compile --target=${target.target} --outfile="${outputPath}"`;
 		const env = { ...process.env };
 		// see https://github.com/oven-sh/bun/issues/28327.
 		if (currentPlatform === "windows") {

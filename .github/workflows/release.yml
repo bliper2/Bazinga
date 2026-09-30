@@ -26,7 +26,12 @@ jobs:
 
         steps:
             - uses: actions/checkout@v4
+              with:
+                  submodules: true
             - uses: oven-sh/setup-bun@v2
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
 
             - name: Install system dependencies
               if: ${{ matrix.platform == 'linux' }}
@@ -36,25 +41,14 @@ jobs:
               run: bun install
 
             - name: Build
-              run: bun run build
-
-            - name: Run Electron Builder
-              if: ${{ matrix.platform != 'mac' }}
               run: |
-                  bun run electron-builder --${{ matrix.platform }} --publish always
+                  bun run build
+                  bun run buildEquicord
+
+            # Builds are unsigned for now. electron-builder publishes a draft release;
+            # publish it on GitHub to make it visible to the auto-updater.
+            - name: Run Electron Builder
+              run: bun run electron-builder --${{ matrix.platform }} --publish always
               env:
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-            - name: Run Electron Builder
-              if: ${{ matrix.platform == 'mac' }}
-              run: |
-                  echo "$API_KEY" > apple.p8
-                  bun run electron-builder --${{ matrix.platform }} --publish always
-              env:
-                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  CSC_LINK: ${{ secrets.APPLE_SIGNING_CERT }}
-                  CSC_KEY_PASSWORD: ${{ secrets.APPLE_SIGNING_CERT_PASSWORD }}
-                  API_KEY: ${{ secrets.APPLE_API_KEY }}
-                  APPLE_API_KEY: apple.p8
-                  APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
-                  APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+                  CSC_IDENTITY_AUTO_DISCOVERY: false

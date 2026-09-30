@@ -85,7 +85,7 @@ function initMenuBar(win: BrowserWindow) {
 
     const subMenu = [
         {
-            label: "About Equibop",
+            label: "About Bazinga",
             click: createAboutWindow
         },
         {
@@ -96,14 +96,14 @@ function initMenuBar(win: BrowserWindow) {
                 app.relaunch();
                 app.quit();
             },
-            toolTip: "Equibop will automatically restart after this operation"
+            toolTip: "Bazinga will automatically restart after this operation"
         },
         {
-            label: "Reset Equibop",
+            label: "Reset Bazinga",
             async click() {
                 await clearData(win);
             },
-            toolTip: "Equibop will automatically restart after this operation"
+            toolTip: "Bazinga will automatically restart after this operation"
         },
         {
             label: "Relaunch",
@@ -190,7 +190,7 @@ function initMenuBar(win: BrowserWindow) {
 
     const menuItems = [
         {
-            label: "Equibop",
+            label: "Bazinga",
             role: "appMenu",
             submenu: subMenu.filter(isTruthy)
         },
@@ -262,6 +262,9 @@ function initSettingsListeners(win: BrowserWindow) {
     });
 
     addSettingsListener("spellCheckLanguages", languages => initSpellCheckLanguages(win, languages));
+
+    // Switch Stable/PTB/Canary without a restart. Each branch is its own origin, so it keeps its own login.
+    addSettingsListener("discordBranch", () => loadUrl(undefined));
 }
 
 async function initSpellCheckLanguages(_win: BrowserWindow, languages?: string[]) {
@@ -299,7 +302,7 @@ function initStaticTitle(win: BrowserWindow) {
 
     addSettingsListener("staticTitle", enabled => {
         if (enabled) {
-            win.setTitle("Equibop");
+            win.setTitle("Bazinga");
             win.on("page-title-updated", listener);
         } else {
             win.off("page-title-updated", listener);
@@ -404,7 +407,7 @@ function buildBrowserWindowOptions(): BrowserWindowConstructorOptions {
     }
 
     if (staticTitle) {
-        options.title = "Equibop";
+        options.title = "Bazinga";
     }
 
     if (process.platform === "darwin") {

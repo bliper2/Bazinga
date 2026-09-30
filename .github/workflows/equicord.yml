@@ -1,0 +1,61 @@
+name: Equicord build
+
+# Publishes our Equicord build (upstream Equicord + ./plugins) to the "equicord-latest" prerelease.
+# Clients update it in place from Equicord's Updater tab, without reinstalling the app.
+
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - plugins/**
+            - equicord
+            - scripts/build/buildEquicord.mts
+            - src/shared/repo.ts
+    workflow_dispatch:
+
+permissions:
+    contents: write
+
+concurrency:
+    group: equicord-release
+    cancel-in-progress: false
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  submodules: true
+            - uses: oven-sh/setup-bun@v2
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+
+            - name: Install dependencies
+              run: bun install
+
+            - name: Build Equicord
+              run: bun run buildEquicord
+
+            # Equicord's updater reads the commit hash from the last word of the release name.
+            - name: Publish prerelease
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  TAG=equicord-latest
+                  TITLE="Equicord build ${GITHUB_SHA}"
+                  EQUICORD_COMMIT=$(git -C equicord rev-parse HEAD)
+                  NOTES="Built from ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/${GITHUB_SHA} (Equicord ${EQUICORD_COMMIT}). Source code is available under GPL-3.0-or-later at that commit."
+
+                  git tag -f "$TAG" "$GITHUB_SHA"
+                  git push -f origin "refs/tags/$TAG"
+
+                  if gh release view "$TAG" > /dev/null 2>&1; then
+                      gh release edit "$TAG" --title "$TITLE" --notes "$NOTES" --prerelease
+                  else
+                      gh release create "$TAG" --title "$TITLE" --notes "$NOTES" --prerelease
+                  fi
+                  gh release upload "$TAG" dist/equicord/equibop.asar --clobber

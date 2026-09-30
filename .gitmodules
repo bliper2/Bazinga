@@ -1,0 +1,3 @@
+[submodule "equicord"]
+	path = equicord
+	url = https://github.com/Equicord/Equicord
