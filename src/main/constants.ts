@@ -6,15 +6,20 @@
 
 import { app } from "electron";
 import { existsSync, mkdirSync } from "fs";
-import { dirname, join } from "path";
+import { basename, dirname, join } from "path";
 
 import { CommandLine } from "./cli";
 
 const equibopDir = dirname(process.execPath);
 
+// electron-builder recreates its unpacked output folder (e.g. dist/win-unpacked) on every build,
+// so portable data stored there would be wiped, logging the user out after each rebuild.
+const isBuilderOutputDir = /^win(-[a-z0-9]+)?-unpacked$/i.test(basename(equibopDir));
+
 export const PORTABLE =
     process.platform === "win32" &&
     !process.execPath.toLowerCase().endsWith("electron.exe") &&
+    !isBuilderOutputDir &&
     !existsSync(join(equibopDir, "Uninstall Bazinga.exe"));
 
 export const DATA_DIR =
