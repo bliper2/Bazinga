@@ -31,6 +31,16 @@ Bazinga is a fork of [Equibop](https://github.com/Equicord/Equibop), which is a 
 | **ChannelNotes**        | Private notes per channel or DM, from a button in the channel toolbar                          | No            |
 | **CollapseLong**        | Collapses very long messages. Click one to expand it                                            | No            |
 | **PerfOverlay**         | Overlay with FPS, JavaScript heap, page size and blocking tasks                                 | No            |
+| **ScreenshotMode**      | Blurs names, profile pictures and optionally messages and server icons. Ctrl+Shift+B or the eye button | No |
+| **SecretLeakGuard**     | Asks before you send something that looks like a password, API key, token or card number      | Yes           |
+| **AttachmentScanner**   | Warns under attachments that can run code or hide their real type (`.exe`, `photo.jpg.exe`)    | Yes           |
+| **ExifStripWarning**    | Warns before you upload a photo containing GPS location and can remove it without re-encoding | Yes           |
+| **AccountAgeBadge**     | Marks accounts younger than 30 days in chat and the member list                                 | No            |
+| **QuietHours**          | Silences notifications and their sounds during set hours, without changing your status         | No            |
+| **DraftCenter**         | Title-bar button listing unsent drafts from every channel, to open or discard                   | No            |
+| **Reminders**           | Right-click a message, Remind me, and get a notification later                                  | No            |
+| **ScratchPad**          | A notepad you can open from the title bar anywhere in Discord                                   | No            |
+| **MathRender**          | Shows LaTeX between `$$ … $$` as formatted equations (KaTeX, loaded on first use)               | No            |
 
 Planned (see the roadmap below): performance settings, telemetry blocking, reload shortcuts, more plugins.
 

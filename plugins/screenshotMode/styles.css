@@ -1,0 +1,34 @@
+/* Discord's class names carry a hash suffix, so match on the stable prefix. */
+
+.bz-ss-avatars img[class*="avatar"],
+.bz-ss-avatars [class*="avatar"] img,
+.bz-ss-avatars foreignObject img,
+.bz-ss-names [class*="username_"],
+.bz-ss-names [class*="nameAndDecorators"],
+.bz-ss-names [class*="nickname"],
+.bz-ss-names [class*="panelTitleContainer"],
+.bz-ss-names [class*="title_"] [class*="name_"],
+.bz-ss-messages [id^="message-content-"],
+.bz-ss-messages [id^="message-accessories-"],
+.bz-ss-messages [class*="repliedTextContent"],
+.bz-ss-servers [data-list-item-id^="guildsnav___"] img,
+.bz-ss-servers [data-list-item-id^="guildsnav___"] [class*="acronym"] {
+    filter: blur(8px);
+    transition: filter 0.15s;
+}
+
+.bz-ss-hover.bz-ss-avatars img[class*="avatar"]:hover,
+.bz-ss-hover.bz-ss-avatars [class*="avatar"]:hover img,
+.bz-ss-hover.bz-ss-avatars foreignObject img:hover,
+.bz-ss-hover.bz-ss-names [class*="username_"]:hover,
+.bz-ss-hover.bz-ss-names [class*="nameAndDecorators"]:hover,
+.bz-ss-hover.bz-ss-names [class*="nickname"]:hover,
+.bz-ss-hover.bz-ss-names [class*="panelTitleContainer"]:hover,
+.bz-ss-hover.bz-ss-names [class*="title_"] [class*="name_"]:hover,
+.bz-ss-hover.bz-ss-messages [id^="message-content-"]:hover,
+.bz-ss-hover.bz-ss-messages [id^="message-accessories-"]:hover,
+.bz-ss-hover.bz-ss-messages [class*="repliedTextContent"]:hover,
+.bz-ss-hover.bz-ss-servers [data-list-item-id^="guildsnav___"]:hover img,
+.bz-ss-hover.bz-ss-servers [data-list-item-id^="guildsnav___"]:hover [class*="acronym"] {
+    filter: none;
+}

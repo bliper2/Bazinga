@@ -1,0 +1,19 @@
+.bz-attachment-warning {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-width: 520px;
+    margin-top: 6px;
+    padding: 8px 12px;
+    border-left: 4px solid var(--status-danger, #da373c);
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--status-danger, #da373c) 12%, transparent);
+    color: var(--text-default, var(--text-normal));
+    font-size: 13px;
+}
+
+.bz-attachment-warning ul {
+    margin: 0;
+    padding-left: 18px;
+    list-style: disc;
+}

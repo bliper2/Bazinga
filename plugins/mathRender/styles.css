@@ -1,0 +1,16 @@
+.bz-math {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-width: 100%;
+    margin-top: 4px;
+    padding: 6px 10px;
+    overflow-x: auto;
+    border-radius: 6px;
+    background: var(--background-base-lower, var(--background-secondary));
+    color: var(--text-default, var(--text-normal));
+}
+
+.bz-math-item .katex-display {
+    margin: 4px 0;
+}

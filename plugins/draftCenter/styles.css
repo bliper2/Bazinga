@@ -1,0 +1,44 @@
+.bz-drafts {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 8px;
+}
+
+.bz-drafts-empty {
+    color: var(--text-muted);
+}
+
+.bz-draft {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--background-base-lower, var(--background-secondary));
+}
+
+.bz-draft-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    color: var(--header-primary, var(--text-strong));
+    font-size: 14px;
+}
+
+.bz-draft-head span {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.bz-draft-text {
+    color: var(--text-default, var(--text-normal));
+    font-size: 14px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.bz-draft-actions {
+    display: flex;
+    gap: 8px;
+}
