@@ -42,6 +42,13 @@ Bazinga is a fork of [Equibop](https://github.com/Equicord/Equibop), which is a 
 | **ScratchPad**          | A notepad you can open from the title bar anywhere in Discord                                   | No            |
 | **MathRender**          | Shows LaTeX between `$$ … $$` as formatted equations (KaTeX, loaded on first use)               | No            |
 
+### Themes by orgeco
+
+Bazinga ships 7 themes made by orgeco. They appear under **Settings → Themes** after the first launch:
+Bazinga Midnight, Orgeco Neon, Orgeco Mocha, Orgeco Forest, Orgeco Ocean, Orgeco Sakura (light) and
+Orgeco AMOLED. They are defined in [`src/main/bundledThemes.ts`](src/main/bundledThemes.ts) and written to the
+themes folder on startup. A theme file is only replaced when its version in that file goes up, so local edits are kept.
+
 Planned (see the roadmap below): performance settings, telemetry blocking, reload shortcuts, more plugins.
 
 ## Setup

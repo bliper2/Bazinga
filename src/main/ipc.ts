@@ -30,6 +30,7 @@ import { IpcEvents } from "../shared/IpcEvents";
 import { setBadgeCount } from "./appBadge";
 import { createArRPCWindow } from "./arrpcWindow";
 import { autoStart } from "./autoStart";
+import { installBundledThemes } from "./bundledThemes";
 import { VENCORD_QUICKCSS_FILE, VENCORD_THEMES_DIR } from "./constants";
 import { AppEvents } from "./events";
 import { getPlatformSpoofInfo } from "./gnuSpoofing";
@@ -221,6 +222,7 @@ open(VENCORD_QUICKCSS_FILE, "a+")
     });
 
 mkdirSync(VENCORD_THEMES_DIR, { recursive: true });
+installBundledThemes(VENCORD_THEMES_DIR);
 themesWatcher = watch(
     VENCORD_THEMES_DIR,
     { persistent: false },
