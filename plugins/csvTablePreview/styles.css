@@ -1,0 +1,47 @@
+.bz-csv {
+    max-width: 100%;
+    max-height: 420px;
+    margin-top: 4px;
+    overflow: auto;
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    color: var(--text-default, var(--text-normal));
+    font-size: 13px;
+}
+
+.bz-csv-title {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border-subtle);
+    font-weight: 600;
+}
+
+.bz-csv table {
+    border-collapse: collapse;
+    width: max-content;
+    min-width: 100%;
+}
+
+.bz-csv th,
+.bz-csv td {
+    padding: 4px 10px;
+    border-bottom: 1px solid var(--border-subtle);
+    text-align: left;
+    white-space: nowrap;
+}
+
+.bz-csv th {
+    position: sticky;
+    top: 0;
+    background: var(--background-base-lower, var(--background-secondary));
+    font-weight: 600;
+}
+
+.bz-csv tbody tr:nth-child(even) {
+    background: var(--background-mod-subtle, var(--background-modifier-hover));
+}
+
+.bz-csv-more {
+    padding: 6px 10px;
+    color: var(--text-muted);
+    font-size: 12px;
+}

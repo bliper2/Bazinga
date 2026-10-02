@@ -1,0 +1,53 @@
+.bz-chain {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-bottom: 8px;
+}
+
+.bz-chain-note {
+    margin-bottom: 8px;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.bz-chain-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: var(--background-base-lower, var(--background-secondary));
+    color: var(--text-default, var(--text-normal));
+    text-align: left;
+    cursor: pointer;
+}
+
+.bz-chain-item:hover {
+    background: var(--background-mod-subtle, var(--background-modifier-hover));
+}
+
+.bz-chain-current {
+    border-color: var(--brand-500);
+}
+
+.bz-chain-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    color: var(--header-primary, var(--text-strong));
+    font-size: 14px;
+}
+
+.bz-chain-head span {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.bz-chain-text {
+    font-size: 14px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}

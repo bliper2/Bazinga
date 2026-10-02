@@ -95,3 +95,96 @@ export function matchesShortcut(e: KeyboardEvent, shortcut: string) {
         && e.altKey === parts.includes("alt")
         && e.metaKey === parts.includes("meta");
 }
+
+const scriptLoads = new Map<string, Promise<void>>();
+
+/**
+ * Loads a pinned script or stylesheet from a CDN that Equicord's CSP allows (cdn.jsdelivr.net),
+ * checked with Subresource Integrity so a modified file is refused. Each URL loads once.
+ */
+export function loadFromCdn(url: string, integrity: string): Promise<void> {
+    let pending = scriptLoads.get(url);
+    if (pending) return pending;
+
+    pending = new Promise<void>((resolve, reject) => {
+        const el = url.endsWith(".css")
+            ? Object.assign(document.createElement("link"), { rel: "stylesheet", href: url })
+            : Object.assign(document.createElement("script"), { src: url });
+        el.integrity = integrity;
+        el.crossOrigin = "anonymous";
+        el.onload = () => resolve();
+        el.onerror = () => {
+            el.remove();
+            // Forget the failure so a later call can retry, for example after the network comes back.
+            scriptLoads.delete(url);
+            reject(new Error(`Failed to load ${url}`));
+        };
+        document.head.append(el);
+    });
+    scriptLoads.set(url, pending);
+    return pending;
+}
+
+export const MESSAGE_CONTENT_SELECTOR = '[id^="message-content-"]';
+
+/**
+ * Calls `onContent` for every message text element on the page now and every one Discord adds later,
+ * batched once per animation frame.
+ */
+export function watchMessageContent(logger: Logger, onContent: (el: HTMLElement) => void) {
+    const pending = new Set<Element>();
+    let frame = 0;
+
+    const flush = guard(logger, "Failed to process messages", () => {
+        frame = 0;
+        for (const root of pending) {
+            if (!root.isConnected) continue;
+            // closest() includes the element itself, so this also covers changes deep inside a message.
+            const own = root.closest<HTMLElement>(MESSAGE_CONTENT_SELECTOR);
+            if (own) onContent(own);
+            root.querySelectorAll<HTMLElement>(MESSAGE_CONTENT_SELECTOR).forEach(onContent);
+        }
+        pending.clear();
+    });
+
+    const queue = (root: Element) => {
+        pending.add(root);
+        frame ||= requestAnimationFrame(flush);
+    };
+
+    const observer = new MutationObserver(mutations => {
+        for (const m of mutations) {
+            if (m.type === "characterData") {
+                const parent = m.target.parentElement?.closest(MESSAGE_CONTENT_SELECTOR);
+                if (parent) queue(parent);
+                continue;
+            }
+            for (const node of m.addedNodes) {
+                if (node instanceof Element) queue(node);
+                else if (node.parentElement) queue(node.parentElement);
+            }
+        }
+    });
+    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+    queue(document.body);
+
+    return {
+        /** Re-runs `onContent` on everything currently on the page, e.g. after a setting changes. */
+        recheck: () => queue(document.body),
+        stop: () => {
+            observer.disconnect();
+            cancelAnimationFrame(frame);
+            pending.clear();
+        }
+    };
+}
+
+/** Returns the bodies of fenced code blocks (```lang ... ```) whose language is one of `languages`. */
+export function codeBlocks(content: string, languages: string[]): string[] {
+    const wanted = new Set(languages.map(l => l.toLowerCase()));
+    const blocks: string[] = [];
+    for (const match of content.matchAll(/```([\w+-]*)\n([\s\S]*?)```/g)) {
+        if (wanted.has(match[1].toLowerCase())) blocks.push(match[2]);
+    }
+    return blocks;
+}

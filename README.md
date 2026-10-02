@@ -41,13 +41,29 @@ Bazinga is a fork of [Equibop](https://github.com/Equicord/Equibop), which is a 
 | **Reminders**           | Right-click a message, Remind me, and get a notification later                                  | No            |
 | **ScratchPad**          | A notepad you can open from the title bar anywhere in Discord                                   | No            |
 | **MathRender**          | Shows LaTeX between `$$ … $$` as formatted equations (KaTeX, loaded on first use)               | No            |
+| **CopyAsMarkdown**      | Right-click, Copy as Markdown: quote with author and a link back                                | No            |
+| **ReplyChainViewer**    | Right-click a reply, View reply chain, to see the whole conversation                           | No            |
+| **ReadingTime**         | "3 min read" next to long messages                                                              | No            |
+| **Censor**              | Hides words you choose in messages, on your screen only                                         | No            |
+| **JsonPrettify**        | ```` ```json ```` blocks as a collapsible tree                                                  | No            |
+| **CsvTablePreview**     | ```` ```csv ```` blocks and .csv attachments as tables                                          | No            |
+| **MermaidRender**       | ```` ```mermaid ```` blocks as diagrams (Mermaid, loaded on first use)                          | No            |
+| **QRCodeReader**        | Right-click an image, Scan QR code, with a scam-link warning                                    | No            |
+| **PinSearch**           | Channel toolbar button to search pinned messages                                                | No            |
+| **WorldClock**          | Title-bar clock for the time zones you choose                                                   | No            |
 
 ### Themes by orgeco
 
-Bazinga ships 7 themes made by orgeco. They appear under **Settings → Themes** after the first launch:
-Bazinga Midnight, Orgeco Neon, Orgeco Mocha, Orgeco Forest, Orgeco Ocean, Orgeco Sakura (light) and
-Orgeco AMOLED. They are defined in [`src/main/bundledThemes.ts`](src/main/bundledThemes.ts) and written to the
+Bazinga ships 12 themes made by orgeco. They appear under **Settings → Themes** after the first launch:
+Bazinga Midnight, Orgeco Neon, Mocha, Forest, Ocean, Sunset, Crimson, Gold and AMOLED (dark), plus
+Orgeco Sakura, Arctic and Lavender (light). They are defined in [`src/main/bundledThemes.ts`](src/main/bundledThemes.ts) and written to the
 themes folder on startup. A theme file is only replaced when its version in that file goes up, so local edits are kept.
+
+To change any orgeco theme's accent color, add this to QuickCSS (**Settings → Themes → Edit QuickCSS**):
+
+```css
+html:root { --bz-accent: #ff66aa; --bz-accent-hover: #ff8cc0; }
+```
 
 Planned (see the roadmap below): performance settings, telemetry blocking, reload shortcuts, more plugins.
 

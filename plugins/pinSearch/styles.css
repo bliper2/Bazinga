@@ -1,0 +1,53 @@
+.bz-pins {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 60vh;
+    margin-top: 10px;
+    padding-bottom: 8px;
+    overflow-y: auto;
+}
+
+.bz-pins-note {
+    color: var(--text-muted);
+}
+
+.bz-pin {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    background: var(--background-base-lower, var(--background-secondary));
+    color: var(--text-default, var(--text-normal));
+    text-align: left;
+    cursor: pointer;
+}
+
+.bz-pin:hover {
+    background: var(--background-mod-subtle, var(--background-modifier-hover));
+}
+
+.bz-pin-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    color: var(--header-primary, var(--text-strong));
+    font-size: 14px;
+}
+
+.bz-pin-head span {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.bz-pin-text {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 14px;
+    word-break: break-word;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
