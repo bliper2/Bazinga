@@ -51,7 +51,7 @@ const THEMES: BundledTheme[] = [
         file: "Bazinga-Midnight.theme.css",
         name: "Bazinga Midnight",
         description: "Deep navy with warm amber accents. The signature Bazinga look.",
-        version: "1.0.0",
+        version: "1.1.0",
         palette: {
             bg0: "#0b0f1a",
             bg1: "#11172a",
@@ -73,7 +73,7 @@ const THEMES: BundledTheme[] = [
         file: "Orgeco-Neon.theme.css",
         name: "Orgeco Neon",
         description: "Dark violet with electric cyan, for late-night sessions.",
-        version: "1.0.0",
+        version: "1.1.0",
         palette: {
             bg0: "#0d0618",
             bg1: "#150b26",
@@ -95,7 +95,7 @@ const THEMES: BundledTheme[] = [
         file: "Orgeco-Mocha.theme.css",
         name: "Orgeco Mocha",
         description: "Cozy coffee browns with soft peach highlights.",
-        version: "1.0.0",
+        version: "1.1.0",
         palette: {
             bg0: "#1a1411",
             bg1: "#221a16",
@@ -117,7 +117,7 @@ const THEMES: BundledTheme[] = [
         file: "Orgeco-Forest.theme.css",
         name: "Orgeco Forest",
         description: "Deep pine greens with fresh mint accents.",
-        version: "1.0.0",
+        version: "1.1.0",
         palette: {
             bg0: "#0c1410",
             bg1: "#111c16",
@@ -139,7 +139,7 @@ const THEMES: BundledTheme[] = [
         file: "Orgeco-Ocean.theme.css",
         name: "Orgeco Ocean",
         description: "Calm deep-sea blues with bright teal accents.",
-        version: "1.0.0",
+        version: "1.1.0",
         palette: {
             bg0: "#06121c",
             bg1: "#0a1a27",
@@ -161,7 +161,7 @@ const THEMES: BundledTheme[] = [
         file: "Orgeco-Sakura.theme.css",
         name: "Orgeco Sakura",
         description: "A light theme of cherry-blossom pinks and cream.",
-        version: "1.0.0",
+        version: "1.1.0",
         palette: {
             bg0: "#f3dfe6",
             bg1: "#f9e9ee",
@@ -183,7 +183,7 @@ const THEMES: BundledTheme[] = [
         file: "Orgeco-AMOLED.theme.css",
         name: "Orgeco AMOLED",
         description: "Pure black for OLED screens, with crisp white text and a subtle red accent.",
-        version: "1.0.0",
+        version: "1.1.0",
         palette: {
             bg0: "#000000",
             bg1: "#000000",
@@ -200,6 +200,116 @@ const THEMES: BundledTheme[] = [
             border: "#1f1f1f",
             mention: "rgb(255 59 92 / 12%)"
         }
+    },
+    {
+        file: "Orgeco-Sunset.theme.css",
+        name: "Orgeco Sunset",
+        description: "Dusky plum with glowing orange, like the last light of the day.",
+        version: "1.1.0",
+        palette: {
+            bg0: "#140b16",
+            bg1: "#1c1020",
+            bg2: "#231428",
+            bg3: "#2e1b34",
+            hover: "#3a2241",
+            text: "#f0dde6",
+            muted: "#ab8fa2",
+            strong: "#fff4f8",
+            accent: "#ff7a45",
+            accentHover: "#ff9466",
+            onAccent: "#2a0d00",
+            link: "#ffb86b",
+            border: "#3f2646",
+            mention: "rgb(255 122 69 / 14%)"
+        }
+    },
+    {
+        file: "Orgeco-Crimson.theme.css",
+        name: "Orgeco Crimson",
+        description: "Near-black with bold crimson accents.",
+        version: "1.1.0",
+        palette: {
+            bg0: "#0d0707",
+            bg1: "#150b0b",
+            bg2: "#1b0e0f",
+            bg3: "#261415",
+            hover: "#321a1c",
+            text: "#ecd9da",
+            muted: "#a68a8c",
+            strong: "#ffffff",
+            accent: "#e5383b",
+            accentHover: "#f05a5d",
+            onAccent: "#ffffff",
+            link: "#ff7b7e",
+            border: "#3a1d1f",
+            mention: "rgb(229 56 59 / 14%)"
+        }
+    },
+    {
+        file: "Orgeco-Gold.theme.css",
+        name: "Orgeco Gold",
+        description: "Black and gold, for a premium look.",
+        version: "1.1.0",
+        palette: {
+            bg0: "#070707",
+            bg1: "#0e0e0d",
+            bg2: "#131312",
+            bg3: "#1c1b18",
+            hover: "#26241f",
+            text: "#e9e4d6",
+            muted: "#9e9783",
+            strong: "#fffaf0",
+            accent: "#d4af37",
+            accentHover: "#e3c45e",
+            onAccent: "#1a1400",
+            link: "#e8c766",
+            border: "#2c2a23",
+            mention: "rgb(212 175 55 / 14%)"
+        }
+    },
+    {
+        file: "Orgeco-Arctic.theme.css",
+        name: "Orgeco Arctic",
+        description: "A light theme of icy blues and clean whites.",
+        version: "1.1.0",
+        palette: {
+            bg0: "#d9e5ef",
+            bg1: "#e8f0f6",
+            bg2: "#f7fbfe",
+            bg3: "#ffffff",
+            hover: "#d6e4ef",
+            text: "#1d2b38",
+            muted: "#5f7385",
+            strong: "#0b1621",
+            accent: "#2b7de9",
+            accentHover: "#1c66c9",
+            onAccent: "#ffffff",
+            link: "#1f6fd6",
+            border: "#c8d7e4",
+            mention: "rgb(43 125 233 / 12%)"
+        }
+    },
+    {
+        file: "Orgeco-Lavender.theme.css",
+        name: "Orgeco Lavender",
+        description: "A soft light theme in lavender and lilac.",
+        version: "1.1.0",
+        palette: {
+            bg0: "#e4dcf3",
+            bg1: "#efe9f9",
+            bg2: "#faf8fe",
+            bg3: "#ffffff",
+            hover: "#e2d8f3",
+            text: "#33264a",
+            muted: "#7d6f96",
+            strong: "#1d1430",
+            accent: "#7c5cd6",
+            accentHover: "#6645c2",
+            onAccent: "#ffffff",
+            link: "#6a48cf",
+            border: "#d9cdef",
+            mention: "rgb(124 92 214 / 12%)"
+        }
     }
 ];
 
@@ -213,14 +323,21 @@ function render(theme: BundledTheme) {
  * @source https://github.com/bliper2/Bazinga
  */
 
+/*
+ * Accent color. To use your own, add this to QuickCSS (Settings > Themes > Edit QuickCSS):
+ *   html:root { --bz-accent: #ff66aa; --bz-accent-hover: #ff8cc0; }
+ */
+:root {
+    --bz-accent: ${p.accent};
+    --bz-accent-hover: ${p.accentHover};
+}
+
 /* Doubled classes beat Discord's own theme selectors without needing !important. */
 :root:root,
 .theme-dark.theme-dark,
 .theme-darker.theme-darker,
 .theme-midnight.theme-midnight,
 .theme-light.theme-light {
-    --bz-accent: ${p.accent};
-
     --background-base-lowest: ${p.bg0};
     --background-base-lower: ${p.bg1};
     --background-base-low: ${p.bg2};
@@ -238,8 +355,8 @@ function render(theme: BundledTheme) {
     --input-background: ${p.bg3};
     --input-background-default: ${p.bg3};
     --input-border-default: ${p.border};
-    --input-border-hover: ${p.accent};
-    --input-border-active: ${p.accent};
+    --input-border-hover: var(--bz-accent);
+    --input-border-active: var(--bz-accent);
     --input-text-default: ${p.text};
     --input-placeholder-text-default: ${p.muted};
     --input-icon-default: ${p.muted};
@@ -283,24 +400,24 @@ function render(theme: BundledTheme) {
     --icon-strong: ${p.strong};
     --text-link: ${p.link};
 
-    --brand-500: ${p.accent};
-    --brand-560: ${p.accentHover};
-    --brand-600: ${p.accentHover};
-    --brand-experiment: ${p.accent};
-    --brand-experiment-560: ${p.accentHover};
-    --brand-experiment-600: ${p.accentHover};
-    --background-brand: ${p.accent};
-    --text-brand: ${p.accent};
-    --control-brand-foreground: ${p.accent};
-    --control-brand-foreground-new: ${p.accent};
-    --control-primary-background-default: ${p.accent};
-    --control-primary-background-hover: ${p.accentHover};
-    --control-primary-background-active: ${p.accentHover};
+    --brand-500: var(--bz-accent);
+    --brand-560: var(--bz-accent-hover);
+    --brand-600: var(--bz-accent-hover);
+    --brand-experiment: var(--bz-accent);
+    --brand-experiment-560: var(--bz-accent-hover);
+    --brand-experiment-600: var(--bz-accent-hover);
+    --background-brand: var(--bz-accent);
+    --text-brand: var(--bz-accent);
+    --control-brand-foreground: var(--bz-accent);
+    --control-brand-foreground-new: var(--bz-accent);
+    --control-primary-background-default: var(--bz-accent);
+    --control-primary-background-hover: var(--bz-accent-hover);
+    --control-primary-background-active: var(--bz-accent-hover);
     --control-primary-text-default: ${p.onAccent};
     --control-primary-text-hover: ${p.onAccent};
     --control-primary-text-active: ${p.onAccent};
-    --button-filled-brand-background: ${p.accent};
-    --button-filled-brand-background-hover: ${p.accentHover};
+    --button-filled-brand-background: var(--bz-accent);
+    --button-filled-brand-background-hover: var(--bz-accent-hover);
     --button-filled-brand-text: ${p.onAccent};
 
     --border-subtle: ${p.border};
@@ -314,7 +431,7 @@ function render(theme: BundledTheme) {
 }
 
 ::selection {
-    background: color-mix(in srgb, ${p.accent} 35%, transparent);
+    background: color-mix(in srgb, var(--bz-accent) 35%, transparent);
 }
 `;
 }
