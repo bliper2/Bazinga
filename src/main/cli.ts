@@ -53,6 +53,10 @@ const options = {
         description: "Set User-Agent to a specific operating system. May trigger anti-spam or break voice chat",
         options: ["windows", "linux", "darwin"]
     },
+    quit: {
+        type: "boolean",
+        description: "Close a running Bazinga cleanly, so Discord keeps you logged in"
+    },
     "toggle-mic": {
         type: "boolean",
         hidden: process.platform !== "linux",
@@ -202,6 +206,16 @@ export function checkCommandLineForHelpOrVersion() {
     }
 }
 
+// Discord saves its login only when the page closes normally, so a forced kill logs the user out.
+// --quit asks the running instance to close the normal way (the build scripts use it before packaging).
+function checkCommandLineForQuit() {
+    if (!CommandLine.values.quit) return false;
+    if (app.requestSingleInstanceLock({ IS_DEV })) console.log("Bazinga is not running.");
+    // When another instance is running, the lock request above already sent it our arguments.
+    app.exit(0);
+    return true;
+}
+
 function checkCommandLineForToggleCommands() {
     const { "toggle-mic": toggleMic, "toggle-deafen": toggleDeafen, "toggle-vad": toggleVad } = CommandLine.values;
 
@@ -302,7 +316,7 @@ function setupSecondInstanceHandler() {
             return;
         }
 
-        if (data?.IS_DEV) {
+        if (data?.IS_DEV || commandLine.includes("--quit")) {
             app.quit();
             return;
         }
@@ -336,6 +350,7 @@ function setupSecondInstanceHandler() {
 }
 
 function checkForSecondInstance() {
+    if (checkCommandLineForQuit()) return;
     if (checkCommandLineForToggleCommands()) return;
     if (checkCommandLineForQueryCommands()) return;
 

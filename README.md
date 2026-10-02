@@ -105,6 +105,10 @@ Other commands:
 | `bun run package:dir` | Build an unpacked app in `dist/<platform>-unpacked`      |
 | `bun run package`     | Build installers for the current platform into `dist/`   |
 
+Do not force-kill Bazinga (for example with `taskkill /F`). Discord saves your login only when the app closes
+normally, so a forced kill logs you out. Quit from the tray icon, or run `bazinga.exe --quit`. The `package` scripts
+do this for you: they ask a running Bazinga to quit cleanly before replacing `dist/win-unpacked`.
+
 Set `EQUICORD_USER_DATA_DIR=/some/folder` to run with a separate profile, for example to test a clean first launch.
 
 ## How the pieces fit
