@@ -206,7 +206,8 @@
         "publish": {
             "provider": "github",
             "owner": "bliper2",
-            "repo": "Bazinga"
+            "repo": "Bazinga",
+            "releaseType": "release"
         },
         "rpm": {
             "fpm": [

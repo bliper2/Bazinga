@@ -1,4 +1,8 @@
-# Bazinga
+# Bazinga <img src="docs/logo.png" width="120" align="right" alt="Bazinga logo">
+
+[![Latest release](https://img.shields.io/github/v/release/bliper2/Bazinga?label=download)](https://github.com/bliper2/Bazinga/releases/latest)
+[![Tests](https://github.com/bliper2/Bazinga/actions/workflows/test.yml/badge.svg)](https://github.com/bliper2/Bazinga/actions/workflows/test.yml)
+[![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
 
 Bazinga is a custom Discord desktop client for Windows, macOS and Linux. It loads Discord's web client in its own
 Electron shell with [Equicord](https://github.com/Equicord/Equicord) built in and enabled by default, so you do not
@@ -10,6 +14,26 @@ Bazinga is a fork of [Equibop](https://github.com/Equicord/Equibop), which is a 
 > [!WARNING]
 > Client modifications are against Discord's Terms of Service. Discord has not been known to ban for them, but you use
 > Bazinga at your own risk.
+
+## Download
+
+Get the latest version from the [Releases page](https://github.com/bliper2/Bazinga/releases/latest):
+
+| System  | File                                                                    |
+| ------- | ----------------------------------------------------------------------- |
+| Windows | `Bazinga Setup x.y.z.exe` (installer) or `Bazinga-x.y.z-win.zip` (portable) |
+| macOS   | `Bazinga-x.y.z-universal.dmg`                                           |
+| Linux   | `.AppImage`, `.deb`, `.rpm` or `.tar.gz`                                |
+
+Builds are not code-signed yet. On Windows, SmartScreen shows "Windows protected your PC": click **More info**, then
+**Run anyway**. On macOS, right-click the app and choose **Open** the first time.
+
+Bazinga updates itself when a new release is published. See [CHANGELOG.md](CHANGELOG.md) for what changed.
+
+<p align="center">
+  <img src="docs/screenshots/theme-bazinga-midnight.png" width="49%" alt="Bazinga Midnight theme">
+  <img src="docs/screenshots/theme-orgeco-sakura.png" width="49%" alt="Orgeco Sakura theme">
+</p>
 
 ## Features
 
@@ -132,9 +156,9 @@ Equicord is loaded from, in order:
 
 There are two release channels in this repository:
 
-- **App:** push a tag like `v0.1.0`. The `Release` workflow builds installers for all platforms and publishes them as a
-  draft release. Publish the draft on GitHub to make it available to the auto-updater. Bump `version` in
-  `package.json` before tagging.
+- **App:** bump `version` in `package.json`, add a section to `CHANGELOG.md`, then push a tag like `v0.1.0`. The
+  `Release` workflow builds installers for all platforms and attaches them to the release for that tag, which the
+  auto-updater then offers to users.
 - **Equicord:** every push to `main` that changes `plugins/`, the `equicord` submodule or the Equicord build script
   runs the `Equicord build` workflow. It replaces the asset on the `equicord-latest` prerelease. Clients pick it up
   from Equicord's Updater tab. It is a prerelease so the app updater ignores it.
@@ -171,9 +195,14 @@ A full template and guide arrive in Phase 4.
 ## Roadmap
 
 - [x] Phase 2: base client, Equicord injection, app and Equicord auto-update, PTB and Canary
-- [x] BetterDiscord theme browser and the first 4 custom plugins (moved ahead of Phase 3)
-- [ ] Phase 3: performance layer, hot reload, plugin manager and theme manager additions
-- [ ] Phase 4: plugin template and guide, remaining custom plugins
+- [x] BetterDiscord theme browser, 25 custom plugins and 12 themes by orgeco
+- [ ] Performance settings page, network-level telemetry blocking, Reload client in the tray
+- [ ] More plugins: ChannelGallery, BookmarkTags, UsageStats, FocusSessions, Readability, ThemeScheduler and others
+- [ ] Plugin template and authoring guide
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Report security problems privately as described in [SECURITY.md](SECURITY.md).
 
 ## License
 

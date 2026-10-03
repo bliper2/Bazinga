@@ -1,0 +1,20 @@
+name: Feature or plugin idea
+description: Suggest a feature, plugin or theme for Bazinga.
+labels: [enhancement]
+body:
+    - type: textarea
+      id: idea
+      attributes:
+          label: Your idea
+          description: What should it do, and why would it help?
+      validations:
+          required: true
+    - type: checkboxes
+      id: rules
+      attributes:
+          label: Ground rules
+          options:
+              - label: It does not automate actions on my account (no self-bot behavior), bypass rate limits or unlock paid Nitro features.
+                required: true
+              - label: I checked that Equicord does not already have a plugin for this.
+                required: true

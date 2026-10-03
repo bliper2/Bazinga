@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Vencord Support Server
-    url: https://discord.gg/wKgT9j2xfN
-    about: "Need Help? Join our support server and ask in the #support channel!"
+  - name: Equicord plugin issues
+    url: https://github.com/Equicord/Equicord/issues
+    about: Problems with Equicord's own plugins (not the Bazinga ones) belong in the Equicord repository.

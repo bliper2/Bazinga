@@ -1,0 +1,41 @@
+name: Bug report
+description: Something in Bazinga does not work as expected.
+labels: [bug]
+body:
+    - type: markdown
+      attributes:
+          value: |
+              Thanks for reporting! Please never paste your Discord token, passwords or other secrets in an issue.
+    - type: input
+      id: version
+      attributes:
+          label: Bazinga version
+          description: Shown under Settings, Bazinga Settings, or in the About window.
+          placeholder: "0.1.0"
+      validations:
+          required: true
+    - type: dropdown
+      id: os
+      attributes:
+          label: Operating system
+          options: [Windows, macOS, Linux]
+      validations:
+          required: true
+    - type: input
+      id: plugin
+      attributes:
+          label: Plugin or theme involved
+          description: Leave empty if it is not about a specific plugin or theme.
+    - type: textarea
+      id: what-happened
+      attributes:
+          label: What happened?
+          description: What did you do, what did you expect, and what happened instead?
+      validations:
+          required: true
+    - type: textarea
+      id: logs
+      attributes:
+          label: Console errors
+          description: Press Ctrl+Shift+I, open the Console tab, and paste any red errors. Check they contain no personal data.
+          render: text
