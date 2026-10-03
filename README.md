@@ -21,7 +21,7 @@ Get the latest version from the [Releases page](https://github.com/bliper2/Bazin
 
 | System  | File                                                                    |
 | ------- | ----------------------------------------------------------------------- |
-| Windows | `Bazinga Setup x.y.z.exe` (installer) or `Bazinga-x.y.z-win.zip` (portable) |
+| Windows | `Bazinga-Setup-x.y.z.exe` (installer, x64 and ARM) or `Bazinga-x.y.z-win.zip` (portable) |
 | macOS   | `Bazinga-x.y.z-universal.dmg`                                           |
 | Linux   | `.AppImage`, `.deb`, `.rpm` or `.tar.gz`                                |
 
