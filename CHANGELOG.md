@@ -1,5 +1,51 @@
 # Changelog
 
+## Unreleased
+
+### App
+
+- **Profiles:** run several accounts side by side with `--profile name`, or from Settings, Profiles.
+- **Safe mode:** `--safe-mode` starts with every plugin and theme off and saves nothing. It starts by itself after
+  three starts in a row that failed.
+- `--branch stable|ptb|canary` picks a Discord branch for one session.
+- **Reload client** in the tray menu, and Ctrl+R and F5 reload the page.
+- **Performance:** presets (balanced, performance, battery saver), a low-end mode, and network-level blocking of
+  Discord's analytics and crash reports. Settings show how long startup took, and the tray shows memory use.
+- Global shortcuts to show or hide the window and to mute.
+- **Backup:** export and import all settings, Equicord plugins and settings, QuickCSS and themes as one file, with an
+  optional password.
+- Restore the bundled Equicord, copy debug info for bug reports, and a `portable.txt` file to force portable mode.
+- After an update, Bazinga offers to open what changed.
+- **Smaller installer:** the Rich Presence helper (about 100 MB) is no longer inside the installers. Bazinga downloads
+  it from the release, checked against `SHA256SUMS.txt`, the first time Rich Presence is turned on. The Windows
+  installer is now one per CPU type (x64 and ARM64) and is about half the size. If you used Rich Presence in 0.1.0,
+  open Settings, Rich Presence and press Download once after updating.
+- Every release now has a `SHA256SUMS.txt`, and its notes come from this file.
+
+### Plugins (38 new, 63 in total)
+
+- Privacy and safety: MassMentionShield, ImpersonationAlert, InviteInspector, ShortenerExpander, BlockLog. SecretLeakGuard
+  also checks files that usually hold secrets, AttachmentScanner asks before downloading programs, ScreenshotMode can turn
+  on while screen sharing, and LinkGuard flags gift-scam wording.
+- Chat and reading: Readability, ZalgoFilter, SpamCollapse, HighlightWords, ScriptBadge, ChannelStats, RegexTester,
+  MarkdownCheatsheet, SnippetLibrary, EmojiUsageStats.
+- Organisation: ColorLabels, BookmarkTags, MessageTodos, BirthdayReminders, UsageStats, FocusSessions,
+  WorkspaceProfiles, RecentChannels, CalendarEvents.
+- Media: ChannelGallery, UploadShrink, ImageColorPicker, ImageCompare, GifFrameViewer, SvgPreview.
+- Accessibility: HighContrastFocus, LiveRegionMessages, ColorBlindModes, ReadAloud.
+- Tools: AutoReload (reloads after turning on a plugin that needs it), LowEndMode, ThemeStudio, ThemeScheduler.
+- The BetterDiscord theme browser gains favorites.
+
+### Themes
+
+- Four new themes by orgeco: Halloween, Winter, Spring and Summer (16 in total).
+- Theme Studio makes your own themes with a live preview.
+
+### Project
+
+- Plugin template and a guide: `docs/WRITING_PLUGINS.md`. The plugin list in `docs/PLUGINS.md` is generated.
+- Unit tests for plugin logic run in CI.
+
 ## 0.1.0
 
 The first release of Bazinga.

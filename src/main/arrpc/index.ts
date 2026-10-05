@@ -15,6 +15,7 @@ import { WebSocket } from "ws";
 import { mainWin } from "../mainWindow";
 import { Settings } from "../settings";
 import { isLocalArrpcHost, sanitizeArrpcPort } from "../utils/arrpcHostValidation";
+import { DOWNLOADED_PATH } from "./download";
 
 const STATE_FILE_PREFIX = "arrpc-state";
 const STATE_FILE_MAX_INDEX = 9;
@@ -132,6 +133,9 @@ function getArRPCBinaryPath(): string {
             searchPaths.push(join(programFiles, "arrpc-bun", "arrpc-bun.exe"));
         }
     }
+
+    // The copy downloaded from the release (see download.ts) comes before one packaged with the app.
+    searchPaths.push(DOWNLOADED_PATH);
 
     if (process.resourcesPath) {
         searchPaths.push(join(process.resourcesPath, "arrpc", packagedBinaryName));

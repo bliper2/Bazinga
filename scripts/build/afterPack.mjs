@@ -1,7 +1,14 @@
 import { cpSync, existsSync, mkdirSync } from "fs";
 import { join } from "path";
 
+// The Rich Presence helper (about 100 MB) is normally not packed: Bazinga downloads it from the release when it is
+// first wanted (src/main/arrpc/download.ts). Set BAZINGA_BUNDLE_ARRPC=1 to pack it for an offline install.
 async function copyArRPCBinaries(context) {
+    if (process.env.BAZINGA_BUNDLE_ARRPC !== "1") {
+        console.log("Not packing the arRPC binary (set BAZINGA_BUNDLE_ARRPC=1 to include it)");
+        return;
+    }
+
     const { electronPlatformName, arch, appOutDir } = context;
 
     // map electron-builder arch enum to string

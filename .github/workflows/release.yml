@@ -45,10 +45,56 @@ jobs:
                   bun run build
                   bun run buildEquicord
 
-            # Builds are unsigned for now. electron-builder publishes a draft release;
-            # publish it on GitHub to make it visible to the auto-updater.
+            # Builds are unsigned for now. electron-builder publishes the release for the tag.
             - name: Run Electron Builder
               run: bun run electron-builder --${{ matrix.platform }} --publish always
               env:
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   CSC_IDENTITY_AUTO_DISCOVERY: false
+
+            # The Rich Presence helper is not inside the installers. The app downloads it from this release
+            # the first time it is needed, and checks it against SHA256SUMS.txt.
+            # macOS refuses to run an unsigned program on Apple Silicon, so it gets an ad-hoc signature first.
+            - name: Sign the Rich Presence helper (macOS)
+              if: ${{ matrix.platform == 'mac' }}
+              run: codesign --force --sign - static/dist/arrpc-darwin-arm64 static/dist/arrpc-darwin-x64
+
+            - name: Upload the Rich Presence helper
+              shell: bash
+              run: gh release upload "$GITHUB_REF_NAME" static/dist/arrpc-* --clobber
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    finalize:
+        needs: release
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+
+            # The release notes come from the matching section of CHANGELOG.md.
+            - name: Release notes from the changelog
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  VERSION="${GITHUB_REF_NAME#v}"
+                  awk -v v="$VERSION" '$0 == "## " v {found=1; next} /^## /{found=0} found' CHANGELOG.md > notes.md
+                  if [ -s notes.md ]; then
+                      gh release edit "$GITHUB_REF_NAME" --notes-file notes.md
+                  else
+                      echo "No section for $VERSION in CHANGELOG.md; leaving the release notes as they are."
+                  fi
+
+            - name: Checksums
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  mkdir assets
+                  cd assets
+                  gh release download "$GITHUB_REF_NAME" \
+                      --pattern '*.exe' --pattern '*.dmg' --pattern '*.zip' --pattern '*.AppImage' \
+                      --pattern '*.deb' --pattern '*.rpm' --pattern '*.tar.gz' --pattern 'arrpc-*'
+                  sha256sum * | sed 's/  / */' > SHA256SUMS.txt
+                  cat SHA256SUMS.txt
+                  gh release upload "$GITHUB_REF_NAME" SHA256SUMS.txt --clobber

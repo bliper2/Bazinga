@@ -185,7 +185,9 @@
         },
         "nsis": {
             "include": "build/installer.nsh",
-            "oneClick": false
+            "oneClick": false,
+            "buildUniversalInstaller": false,
+            "artifactName": "${productName}-Setup-${version}-${arch}.${ext}"
         },
         "win": {
             "icon": "build/icon.ico",

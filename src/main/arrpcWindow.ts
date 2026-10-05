@@ -4,11 +4,12 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { BrowserWindow } from "electron";
+import { BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import { STATIC_DIR } from "shared/paths";
 
 import { getArRPCStatus, restartArRPC } from "./arrpc";
+import { downloadArRPC } from "./arrpc/download";
 import { Settings } from "./settings";
 import { isLocalArrpcHost, sanitizeArrpcPort } from "./utils/arrpcHostValidation";
 import { makeLinksOpenExternally } from "./utils/makeLinksOpenExternally";
@@ -16,6 +17,17 @@ import { loadView } from "./vesktopStatic";
 
 let arrpcWindow: BrowserWindow | null = null;
 let statusInterval: NodeJS.Timeout | null = null;
+
+ipcMain.handle("arrpc-download", async () => {
+    try {
+        await downloadArRPC();
+        await restartArRPC();
+        return { ok: true };
+    } catch (err) {
+        console.error("[Bazinga] Could not download arRPC:", err);
+        return { ok: false, error: err instanceof Error ? err.message : String(err) };
+    }
+});
 
 export function createArRPCWindow() {
     if (arrpcWindow && !arrpcWindow.isDestroyed()) {

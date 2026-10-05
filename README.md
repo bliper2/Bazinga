@@ -21,7 +21,7 @@ Get the latest version from the [Releases page](https://github.com/bliper2/Bazin
 
 | System  | File                                                                    |
 | ------- | ----------------------------------------------------------------------- |
-| Windows | `Bazinga-Setup-x.y.z.exe` (installer, x64 and ARM) or `Bazinga-x.y.z-win.zip` (portable) |
+| Windows | `Bazinga-Setup-x.y.z-x64.exe` or `-arm64.exe` (installer), or `Bazinga-x.y.z-win.zip` (portable) |
 | macOS   | `Bazinga-x.y.z-universal.dmg`                                           |
 | Linux   | `.AppImage`, `.deb`, `.rpm` or `.tar.gz`                                |
 
@@ -187,7 +187,7 @@ rules, the shared helpers, native code, tests and how to build.
 - [x] BetterDiscord theme browser, 63 plugins, 16 themes by orgeco
 - [x] Performance settings, telemetry blocking, reload, profiles, safe mode, backup
 - [x] Plugin template and authoring guide
-- [ ] Smaller installer: download the Rich Presence helper only when it is turned on
+- [x] Smaller installer: the Rich Presence helper is downloaded when it is turned on
 - [ ] Code signing for Windows and macOS builds
 
 ## Contributing

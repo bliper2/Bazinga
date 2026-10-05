@@ -25,6 +25,9 @@ jobs:
       - name: Run tests
         run: bun run test
 
+      - name: Check the plugin list is up to date
+        run: bun run docs:check
+
       - name: Test if it compiles
         run: |
           bun run build

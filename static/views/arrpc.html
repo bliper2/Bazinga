@@ -275,6 +275,7 @@
         </div>
         <div class="activities hidden" id="activities-list"></div>
         <div id="status-error" class="hidden" style="margin-top: 0.6em; padding: 0.6em; border-radius: 4px; background: #ed424522; border: 1px solid #ed4245; font-size: 0.85rem;"></div>
+        <button id="download-arrpc" class="hidden" style="margin-top: 0.6em;">Download the Rich Presence helper (about 100 MB)</button>
     </div>
 
     <div class="settings-section">
@@ -511,10 +512,13 @@
         versionInfo.textContent = status.appVersion ? `\u2022 v${status.appVersion}` : "";
 
         const errorBox = document.getElementById("status-error");
+        const downloadButton = document.getElementById("download-arrpc");
+        downloadButton.classList.add("hidden");
         if (status.lastError && !status.isReady) {
             let hint = "";
             if (/binary not found/i.test(status.lastError)) {
-                hint = " \u2014 install arrpc-bun via your package manager (AUR, brew, nix, etc.) or reinstall Bazinga.";
+                hint = " \u2014 Rich Presence needs a helper program that is not part of the installer. Download it below, or install arrpc-bun with your package manager.";
+                downloadButton.classList.remove("hidden");
             } else if (/SIGILL/.test(status.lastError)) {
                 hint = " \u2014 the bundled arRPC binary is built for a different CPU architecture.";
             } else if (/timeout/i.test(status.lastError)) {
@@ -528,6 +532,22 @@
     }
 
     renderStatus();
+
+    document.getElementById("download-arrpc").addEventListener("click", async function (event) {
+        const button = event.currentTarget;
+        button.disabled = true;
+        button.textContent = "Downloading\u2026";
+
+        const result = await VesktopArRPCNative.download();
+        button.disabled = false;
+        button.textContent = "Download the Rich Presence helper (about 100 MB)";
+
+        if (!result.ok) {
+            const errorBox = document.getElementById("status-error");
+            errorBox.textContent = "Could not download the helper: " + result.error;
+            errorBox.classList.remove("hidden");
+        }
+    });
 
     VesktopArRPCNative.onStatusUpdate(function (newStatus) {
         status = newStatus;
