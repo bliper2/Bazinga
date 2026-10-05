@@ -1,0 +1,43 @@
+.bz-todo-new {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.bz-todo-new > :first-child {
+    flex: 1;
+}
+
+.bz-todos {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 50vh;
+    padding-bottom: 12px;
+    overflow-y: auto;
+}
+
+.bz-todo-note {
+    color: var(--text-muted);
+}
+
+.bz-todo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: var(--background-base-lower, var(--background-secondary));
+    color: var(--text-default, var(--text-normal));
+}
+
+.bz-todo span {
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+}
+
+.bz-todo-done {
+    color: var(--text-muted);
+    text-decoration: line-through;
+}

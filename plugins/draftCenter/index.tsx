@@ -15,10 +15,10 @@ import { openModal } from "@utils/modal";
 import { OptionType } from "@utils/types";
 import type { RenderModalProps } from "@vencord/discord-types";
 import {
-    ChannelStore, DraftStore, DraftType, FluxDispatcher, GuildStore, Modal, NavigationRouter, UserStore, useStateFromStores
+    ChannelStore, DraftStore, DraftType, FluxDispatcher, Modal, NavigationRouter, useStateFromStores
 } from "@webpack/common";
 
-import { definePlugin } from "../_bazinga";
+import { channelLabel, definePlugin } from "../_bazinga";
 
 const PREVIEW_LENGTH = 200;
 
@@ -36,18 +36,6 @@ function useDrafts() {
             .filter(d => d.draft?.trim())
             .sort((a, b) => b.timestamp - a.timestamp)
     );
-}
-
-function channelLabel(channelId: string) {
-    const channel = ChannelStore.getChannel(channelId);
-    if (!channel) return "Unknown channel";
-    if (channel.guild_id) {
-        const guild = GuildStore.getGuild(channel.guild_id);
-        return `${guild?.name ?? "Server"} › #${channel.name}`;
-    }
-    if (channel.name) return channel.name;
-    const recipient = UserStore.getUser(channel.recipients?.[0]);
-    return recipient ? `@${recipient.username}` : "Direct message";
 }
 
 function openChannel(channelId: string) {

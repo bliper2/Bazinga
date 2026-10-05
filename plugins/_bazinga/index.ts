@@ -9,7 +9,7 @@
 import { Logger } from "@utils/Logger";
 import equicordDefinePlugin, { PluginAuthor, PluginDef } from "@utils/types";
 import type { Message } from "@vencord/discord-types";
-import { Alerts, MessageStore } from "@webpack/common";
+import { Alerts, ChannelStore, GuildStore, MessageStore, UserStore } from "@webpack/common";
 import type { ReactNode } from "react";
 
 export const BazingaDevs = {
@@ -199,4 +199,84 @@ export function messageFromElement(el: Element): Message | undefined {
 /** The messages of a channel that Discord has already loaded, oldest first. No requests are made. */
 export function loadedMessages(channelId: string): Message[] {
     return MessageStore.getMessages(channelId)?._array ?? [];
+}
+
+const hiddenGuilds = new Map<string, Set<string>>();
+let hiddenGuildsStyle: HTMLStyleElement | undefined;
+
+/**
+ * Hides servers in the server list. Several plugins can use it at once: a server is hidden while any of them
+ * hides it. Pass null to stop hiding for `owner`. Only numeric ids are accepted, so nothing else reaches the CSS.
+ */
+export function setHiddenGuilds(owner: string, ids: Iterable<string> | null) {
+    if (ids) hiddenGuilds.set(owner, new Set([...ids].filter(id => /^\d+$/.test(id))));
+    else hiddenGuilds.delete(owner);
+
+    const all = new Set([...hiddenGuilds.values()].flatMap(set => [...set]));
+    if (!all.size) {
+        hiddenGuildsStyle?.remove();
+        hiddenGuildsStyle = undefined;
+        return;
+    }
+
+    hiddenGuildsStyle ??= Object.assign(document.createElement("style"), { id: "bazinga-hidden-guilds" });
+    if (!hiddenGuildsStyle.isConnected) document.head.append(hiddenGuildsStyle);
+    hiddenGuildsStyle.textContent = `${[...all].map(id => `[data-list-item-id="guildsnav___${id}"]`).join(",\n")} { display: none !important; }`;
+}
+
+/** Stands in for a notification that was held back, so code that calls close() or adds listeners keeps working. */
+class HeldNotification extends EventTarget {
+    onclick = null;
+    onclose = null;
+    onerror = null;
+    onshow = null;
+    close() {}
+}
+
+/** Return true to hold the notification back instead of showing it. */
+export type NotificationHandler = (title: string, options?: NotificationOptions) => boolean;
+
+const notificationHandlers = new Set<NotificationHandler>();
+let realNotification: typeof Notification | undefined;
+
+/**
+ * Lets a plugin hold back desktop notifications. Several plugins can do this at once, and each one only undoes
+ * its own change. Returns a function that stops the handler.
+ */
+export function interceptNotifications(handler: NotificationHandler) {
+    if (!realNotification) {
+        realNotification = window.Notification;
+        window.Notification = new Proxy(realNotification, {
+            construct(target, args) {
+                for (const h of notificationHandlers) {
+                    try {
+                        if (h(args[0], args[1])) return new HeldNotification();
+                    } catch {
+                        // A broken handler must not stop notifications.
+                    }
+                }
+                return Reflect.construct(target, args);
+            }
+        });
+    }
+    notificationHandlers.add(handler);
+
+    return () => {
+        notificationHandlers.delete(handler);
+        if (!notificationHandlers.size && realNotification) {
+            window.Notification = realNotification;
+            realNotification = undefined;
+        }
+    };
+}
+
+/** A readable name for a channel: "Server › #channel", "@person" or the group name. */
+export function channelLabel(channelId: string) {
+    const channel = ChannelStore.getChannel(channelId);
+    if (!channel) return "Unknown channel";
+    if (channel.guild_id) return `${GuildStore.getGuild(channel.guild_id)?.name ?? "Server"} › #${channel.name}`;
+    if (channel.name) return channel.name;
+
+    const recipient = UserStore.getUser(channel.recipients?.[0]);
+    return recipient ? `@${recipient.username}` : "Direct message";
 }

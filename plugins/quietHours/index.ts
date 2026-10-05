@@ -8,7 +8,7 @@ import { definePluginSettings } from "@api/Settings";
 import { OptionType } from "@utils/types";
 import { showToast, Toasts } from "@webpack/common";
 
-import { definePlugin } from "../_bazinga";
+import { definePlugin, interceptNotifications } from "../_bazinga";
 
 const TIME = /^([01]?\d|2[0-3]):([0-5]\d)$/;
 
@@ -40,7 +40,7 @@ const settings = definePluginSettings({
 });
 
 let snoozeUntil = 0;
-let OriginalNotification: typeof Notification | undefined;
+let stopHolding: (() => void) | undefined;
 
 function minutesOf(value: string) {
     const match = TIME.exec(value.trim());
@@ -57,15 +57,6 @@ function isQuiet(now = new Date()) {
     const current = now.getHours() * 60 + now.getMinutes();
     // A window like 22:00 to 08:00 wraps past midnight.
     return start < end ? current >= start && current < end : current >= start || current < end;
-}
-
-/** Stands in for a notification that was not shown, so callers can still call close() and add listeners. */
-class SilentNotification extends EventTarget {
-    onclick = null;
-    onclose = null;
-    onerror = null;
-    onshow = null;
-    close() { }
 }
 
 function quietFor(minutes: number) {
@@ -105,18 +96,12 @@ export default definePlugin({
     },
 
     start() {
-        OriginalNotification = window.Notification;
-        window.Notification = new Proxy(OriginalNotification, {
-            construct(target, args) {
-                if (settings.store.blockNotifications && isQuiet()) return new SilentNotification();
-                return Reflect.construct(target, args);
-            }
-        });
+        stopHolding = interceptNotifications(() => settings.store.blockNotifications && isQuiet());
     },
 
     stop() {
-        if (OriginalNotification) window.Notification = OriginalNotification;
-        OriginalNotification = undefined;
+        stopHolding?.();
+        stopHolding = undefined;
         snoozeUntil = 0;
     }
 });

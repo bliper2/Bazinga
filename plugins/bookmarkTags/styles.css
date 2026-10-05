@@ -1,0 +1,75 @@
+.bz-bm-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0;
+}
+
+.bz-bm-tag {
+    padding: 2px 8px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 999px;
+    background: none;
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.bz-bm-tag-on {
+    border-color: var(--brand-500);
+    color: var(--text-default, var(--text-normal));
+}
+
+.bz-bm-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+.bz-bm-note {
+    color: var(--text-muted);
+}
+
+.bz-bm {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+}
+
+.bz-bm-open {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    background: var(--background-base-lower, var(--background-secondary));
+    color: var(--text-default, var(--text-normal));
+    text-align: left;
+    cursor: pointer;
+}
+
+.bz-bm-open:hover {
+    background: var(--background-mod-subtle, var(--background-modifier-hover));
+}
+
+.bz-bm-open span {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 13px;
+    word-break: break-word;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.bz-bm-open small {
+    color: var(--brand-500);
+}
+
+.bz-bm-actions {
+    padding: 12px 0;
+}

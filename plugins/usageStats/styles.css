@@ -1,0 +1,45 @@
+.bz-usage-range {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.bz-usage {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-bottom: 12px;
+    color: var(--text-default, var(--text-normal));
+}
+
+.bz-usage-note {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.bz-usage-row {
+    display: grid;
+    grid-template-columns: 160px 1fr auto;
+    align-items: center;
+    gap: 8px;
+}
+
+.bz-usage-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bz-usage-bar {
+    height: 10px;
+    min-width: 2px;
+    border-radius: 5px;
+    background: var(--brand-500);
+}
+
+.bz-usage-time {
+    min-width: 70px;
+    color: var(--text-muted);
+    font-size: 12px;
+    text-align: right;
+}
