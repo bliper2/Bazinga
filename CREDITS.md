@@ -13,8 +13,9 @@ Bazinga is built on the work of these projects. Thank you to their authors and c
 | [Electron](https://github.com/electron/electron)         | Application runtime                                   | MIT               |
 | [electron-builder / electron-updater](https://github.com/electron-userland/electron-builder) | Packaging and auto-update | MIT |
 
-Some plugins load these libraries and fonts from jsDelivr when you first use them. Each is pinned to one version and
-checked with Subresource Integrity:
+Some plugins load these libraries and fonts from jsDelivr when you first use them. Each is pinned to one version, and
+scripts and style sheets are checked with Subresource Integrity (the font files a style sheet points to come from the
+same pinned version):
 
 | Project | Used by | License |
 | ------- | ------- | ------- |
