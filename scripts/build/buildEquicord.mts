@@ -17,7 +17,6 @@ const ROOT = join(import.meta.dirname, "../..");
 const EQUICORD = join(ROOT, "equicord");
 const PLUGINS = join(ROOT, "plugins");
 const USERPLUGINS = join(EQUICORD, "src/userplugins");
-const UPDATER_FILE = join(EQUICORD, "src/main/updater/http.ts");
 const OUT_DIR = join(ROOT, "dist/equicord");
 
 const run = (cmd: string, cwd: string, env: NodeJS.ProcessEnv = {}) =>
@@ -34,11 +33,32 @@ if (existsSync(PLUGINS)) {
     }
 }
 
-// Upstream's updater reads /releases/latest, which in our repo is the app release.
-// Point it at the dedicated Equicord prerelease tag instead.
-const originalUpdater = readFileSync(UPDATER_FILE, "utf-8");
-const patchedUpdater = originalUpdater.replace('githubGet("/releases/latest")', `githubGet("/releases/tags/${EQUICORD_RELEASE_TAG}")`);
-if (patchedUpdater === originalUpdater) throw new Error(`Could not patch ${UPDATER_FILE}; upstream code changed`);
+// Small edits to upstream Equicord. Each one must match exactly once, so a change upstream fails the build loudly
+// instead of silently shipping a broken feature.
+const PATCHES = [
+    {
+        // Upstream's updater reads /releases/latest, which in our repo is the app release.
+        // Point it at the dedicated Equicord prerelease tag instead.
+        file: join(EQUICORD, "src/main/updater/http.ts"),
+        from: 'githubGet("/releases/latest")',
+        to: `githubGet("/releases/tags/${EQUICORD_RELEASE_TAG}")`
+    },
+    {
+        // Safe mode: the app sends `__bazingaSafeMode` with the settings. Plugins that are on by default and were
+        // never saved to the settings file would otherwise still start.
+        file: join(EQUICORD, "src/api/Settings.ts"),
+        from: "enabled: IS_REPORTER || plugins[key].required || plugins[key].enabledByDefault || false",
+        to: "enabled: IS_REPORTER || plugins[key].required || (plugins[key].enabledByDefault && !(settings as any).__bazingaSafeMode) || false"
+    }
+];
+
+const originals = PATCHES.map(patch => readFileSync(patch.file, "utf-8"));
+const patched = PATCHES.map((patch, i) => {
+    if (originals[i].split(patch.from).length !== 2) {
+        throw new Error(`Could not patch ${patch.file}; upstream code changed`);
+    }
+    return originals[i].replace(patch.from, () => patch.to);
+});
 
 // Equicord pins its pnpm version. We run the matching pnpm from our devDependencies through node,
 // because pnpm's native launcher needs a postinstall step that bun and npm may skip.
@@ -51,12 +71,12 @@ const pnpm = `node "${join(ROOT, "node_modules/pnpm/bin/pnpm.mjs")}"`;
 // The updater compares this hash against our repo's commits, so it must be a Bazinga commit.
 const bazingaHash = execSync("git rev-parse HEAD", { cwd: ROOT, encoding: "utf-8" }).trim();
 
-writeFileSync(UPDATER_FILE, patchedUpdater);
+PATCHES.forEach((patch, i) => writeFileSync(patch.file, patched[i]));
 try {
     run(`${pnpm} install --frozen-lockfile`, EQUICORD);
     run(`${pnpm} build --standalone`, EQUICORD, { EQUICORD_REMOTE: REPO_SLUG, EQUICORD_HASH: bazingaHash });
 } finally {
-    writeFileSync(UPDATER_FILE, originalUpdater);
+    PATCHES.forEach((patch, i) => writeFileSync(patch.file, originals[i]));
 }
 
 mkdirSync(OUT_DIR, { recursive: true });

@@ -14,6 +14,14 @@ import { isMac } from "renderer/utils";
 
 import { ArRPCSettingsButton } from "./ArRPCSettings";
 import { AutoStartToggle } from "./AutoStartToggle";
+import {
+    BackupPanel,
+    MaintenanceButtons,
+    PerformancePresetPicker,
+    ProfilesPanel,
+    ShortcutInputs,
+    StartupAndTelemetryInfo
+} from "./BazingaSettings";
 import { DeveloperOptionsButton } from "./DeveloperOptions";
 import { DiscordBranchPicker } from "./DiscordBranchPicker";
 import { NotificationBadgeToggle } from "./NotificationBadgeToggle";
@@ -38,6 +46,24 @@ export type SettingsComponent = ComponentType<{ settings: typeof Settings.store 
 
 const SettingsOptions: Record<string, Array<BooleanSetting | SettingsComponent>> = {
     "Discord Branch": [DiscordBranchPicker],
+    Performance: [
+        PerformancePresetPicker,
+        {
+            key: "lowEndMode",
+            title: "Low-end mode",
+            description:
+                "Uses less memory and turns off animations. Needs a restart. Also turn on the LowEndMode plugin to remove blur and shadows."
+        },
+        {
+            key: "blockTelemetry",
+            title: "Block tracking and crash reports",
+            description: "Stops Discord's analytics and crash-report requests from leaving your computer."
+        },
+        StartupAndTelemetryInfo
+    ],
+    Shortcuts: [ShortcutInputs],
+    Profiles: [ProfilesPanel],
+    "Backup & Troubleshooting": [BackupPanel, MaintenanceButtons],
     "System Startup & Performance": [
         AutoStartToggle,
         {

@@ -60,6 +60,15 @@ function installSeedIfChanged() {
     return true;
 }
 
+/** Replaces the Equicord in use with the build that came with the app, for example after a bad Equicord update. */
+export function restoreBundledEquicord() {
+    if (!existsSync(SEED_EQUICORD_ASAR)) throw new Error("This copy of Bazinga does not include a bundled Equicord.");
+
+    copyFileSync(SEED_EQUICORD_ASAR, VENCORD_DIR);
+    const { size, mtimeMs } = statSync(SEED_EQUICORD_ASAR);
+    State.store.equicordSeed = `${size}-${Math.round(mtimeMs)}`;
+}
+
 export async function ensureVencordFiles() {
     if (installSeedIfChanged() || existsSync(VENCORD_DIR)) return;
 

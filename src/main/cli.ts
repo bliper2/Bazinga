@@ -53,6 +53,20 @@ const options = {
         description: "Set User-Agent to a specific operating system. May trigger anti-spam or break voice chat",
         options: ["windows", "linux", "darwin"]
     },
+    profile: {
+        type: "string",
+        argumentName: "name",
+        description: "Run with a separate set of settings and logins. Different profiles can run at the same time"
+    },
+    branch: {
+        type: "string",
+        options: ["stable", "ptb", "canary"],
+        description: "Use this Discord branch for this session only"
+    },
+    "safe-mode": {
+        type: "boolean",
+        description: "Start with all plugins and themes off. Nothing you change is saved"
+    },
     quit: {
         type: "boolean",
         description: "Close a running Bazinga cleanly, so Discord keeps you logged in"
@@ -348,6 +362,22 @@ function setupSecondInstanceHandler() {
         }
     });
 }
+
+const PROFILE_NAME = /^[\w][\w .-]{0,31}$/;
+
+/** Name of the profile this instance runs, if any. */
+export const PROFILE = (() => {
+    const { profile } = CommandLine.values;
+    return typeof profile === "string" && PROFILE_NAME.test(profile) ? profile : undefined;
+})();
+
+export function isValidProfileName(name: string) {
+    return PROFILE_NAME.test(name);
+}
+
+// A profile gets its own user data folder. Electron derives the single-instance lock from it,
+// so profiles run side by side. This must happen before the lock is requested below.
+if (PROFILE) app.setPath("userData", join(app.getPath("userData"), "profiles", PROFILE));
 
 function checkForSecondInstance() {
     if (checkCommandLineForQuit()) return;

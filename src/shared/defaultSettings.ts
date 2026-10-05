@@ -36,5 +36,10 @@ export const DefaultEquibopSettings: Settings = {
     webRTCIPHandlingPolicy: "default",
     appBadge: true,
     badgeOnlyForMentions: false,
-    transparencyOption: "none"
+    transparencyOption: "none",
+    performancePreset: "balanced",
+    lowEndMode: false,
+    blockTelemetry: true,
+    globalShowHideShortcut: "",
+    globalMuteShortcut: ""
 };

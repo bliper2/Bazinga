@@ -40,6 +40,17 @@ export interface Settings {
     clickTrayToShowHide: boolean;
     nativeTitleBar: boolean;
 
+    /** Chromium flag bundles applied at startup. Needs a restart. */
+    performancePreset: "balanced" | "performance" | "battery";
+    /** Memory-saving flag plus a stylesheet that removes animations and blur. */
+    lowEndMode: boolean;
+    /** Blocks Discord's analytics and crash-report requests at the network level. */
+    blockTelemetry: boolean;
+
+    /** Electron accelerator, like "Ctrl+Alt+B". Empty means no shortcut. */
+    globalShowHideShortcut: string;
+    globalMuteShortcut: string;
+
     enableSplashScreen: boolean;
     splashTheming: boolean;
     splashPixelated: boolean;
@@ -80,6 +91,11 @@ export interface State {
     equicordSeed?: string;
 
     launchArguments?: string;
+
+    /** Starts that did not run for a minute or close normally. Three in a row start safe mode. */
+    startAttempts?: number;
+    /** App version that last ran, to show what changed after an update. */
+    lastVersion?: string;
 
     lastElectronVersion?: string;
 

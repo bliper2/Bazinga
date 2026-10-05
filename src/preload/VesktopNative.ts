@@ -138,6 +138,25 @@ export const VesktopNative = {
             ipcRenderer.on(IpcEvents.TOGGLE_VAD, listener);
         }
     },
+    /** Bazinga-only features. Used by the settings page and by the Bazinga plugins. */
+    bazinga: {
+        reload: () => invoke<void>(IpcEvents.RELOAD_CLIENT),
+        getBlockedRequests: () =>
+            invoke<{ total: number; recent: { time: number; host: string; path: string }[] }>(
+                IpcEvents.GET_BLOCKED_REQUESTS
+            ),
+        getStartupTimings: () => invoke<{ step: string; ms: number }[]>(IpcEvents.GET_STARTUP_TIMINGS),
+        listProfiles: () => invoke<{ current: string | null; profiles: string[] }>(IpcEvents.LIST_PROFILES),
+        openProfile: (name: string | null) => invoke<void>(IpcEvents.OPEN_PROFILE, name),
+        exportSettings: (password?: string) => invoke<"ok" | "cancelled">(IpcEvents.EXPORT_SETTINGS, password),
+        importSettings: (password?: string) =>
+            invoke<"ok" | "cancelled" | "invalid" | "password-needed" | "wrong-password">(
+                IpcEvents.IMPORT_SETTINGS,
+                password
+            ),
+        restoreBundledEquicord: () => invoke<void>(IpcEvents.RESTORE_BUNDLED_EQUICORD),
+        getDebugInfo: () => invoke<string>(IpcEvents.GET_DEBUG_INFO)
+    },
     debug: {
         launchGpu: () => invoke<void>(IpcEvents.DEBUG_LAUNCH_GPU),
         launchWebrtcInternals: () => invoke<void>(IpcEvents.DEBUG_LAUNCH_WEBRTC_INTERNALS)

@@ -8,7 +8,7 @@ import { app } from "electron";
 import { existsSync, mkdirSync } from "fs";
 import { basename, dirname, join } from "path";
 
-import { CommandLine } from "./cli";
+import { CommandLine, PROFILE } from "./cli";
 
 const equibopDir = dirname(process.execPath);
 
@@ -16,14 +16,24 @@ const equibopDir = dirname(process.execPath);
 // so portable data stored there would be wiped, logging the user out after each rebuild.
 const isBuilderOutputDir = /^win(-[a-z0-9]+)?-unpacked$/i.test(basename(equibopDir));
 
+// A "portable.txt" file next to the exe forces portable mode, even for an installed copy.
 export const PORTABLE =
     process.platform === "win32" &&
     !process.execPath.toLowerCase().endsWith("electron.exe") &&
-    !isBuilderOutputDir &&
-    !existsSync(join(equibopDir, "Uninstall Bazinga.exe"));
+    (existsSync(join(equibopDir, "portable.txt")) ||
+        (!isBuilderOutputDir && !existsSync(join(equibopDir, "Uninstall Bazinga.exe"))));
 
-export const DATA_DIR =
-    process.env.EQUICORD_USER_DATA_DIR || (PORTABLE ? join(equibopDir, "Data") : join(app.getPath("userData")));
+// cli.ts already moved userData into the profile folder, so the folder that holds all profiles is two levels up.
+const rootDir =
+    process.env.EQUICORD_USER_DATA_DIR ||
+    (PORTABLE
+        ? join(equibopDir, "Data")
+        : PROFILE
+          ? dirname(dirname(app.getPath("userData")))
+          : app.getPath("userData"));
+
+export const PROFILES_DIR = join(rootDir, "profiles");
+export const DATA_DIR = PROFILE ? join(PROFILES_DIR, PROFILE) : rootDir;
 
 mkdirSync(DATA_DIR, { recursive: true });
 

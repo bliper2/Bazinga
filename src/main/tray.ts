@@ -12,6 +12,7 @@ import { createAboutWindow } from "./about";
 import { createArgumentsWindow } from "./arguments";
 import { createArRPCWindow } from "./arrpcWindow";
 import { AppEvents } from "./events";
+import { isSafeMode } from "./safeMode";
 import { Settings } from "./settings";
 import { resolveAssetPath } from "./userAssets";
 import { clearData } from "./utils/clearData";
@@ -161,7 +162,21 @@ if (!AppEvents.listeners("setTrayVariant").includes(setTrayVariantListener)) {
     AppEvents.on("setTrayVariant", setTrayVariantListener);
 }
 
+const TOOLTIP_REFRESH_MS = 30_000;
+let tooltipTimer: ReturnType<typeof setInterval> | undefined;
+
+/** Shows what Bazinga and its helper processes use in memory, so a heavy plugin is easy to notice. */
+function updateTooltip() {
+    if (!tray) return;
+    const kilobytes = app.getAppMetrics().reduce((sum, p) => sum + (p.memory?.workingSetSize ?? 0), 0);
+    const title = isSafeMode() ? "Bazinga (safe mode)" : "Bazinga";
+    tray.setToolTip(`${title} - ${Math.round(kilobytes / 1024)} MB`);
+}
+
 export function destroyTray() {
+    clearInterval(tooltipTimer);
+    tooltipTimer = undefined;
+
     AppEvents.off("userAssetChanged", userAssetChangedListener);
     AppEvents.off("setTrayVariant", setTrayVariantListener);
 
@@ -222,6 +237,7 @@ export async function initTray(win: BrowserWindow, setIsQuitting: (val: boolean)
                     { id: 1, label: win.isVisible() ? "Hide" : "Open", enabled: true, visible: true },
                     { id: 2, label: "About", enabled: true, visible: true },
                     { id: 11, type: "separator" as const, enabled: true, visible: true },
+                    { id: 13, label: "Reload client", enabled: true, visible: true },
                     { id: 5, label: "Launch Arguments", enabled: true, visible: true },
                     { id: 10, label: "Configure Rich Presence", enabled: true, visible: true },
                     { id: 12, type: "separator" as const, enabled: true, visible: true },
@@ -275,6 +291,9 @@ export async function initTray(win: BrowserWindow, setIsQuitting: (val: boolean)
                         case 4: // reset Bazinga
                             clearData(win);
                             break;
+                        case 13: // reload client
+                            win.webContents.reload();
+                            break;
                         case 5: // launch arguments
                             createArgumentsWindow();
                             break;
@@ -326,6 +345,12 @@ export async function initTray(win: BrowserWindow, setIsQuitting: (val: boolean)
             click: createAboutWindow
         },
         { type: "separator" },
+        {
+            label: "Reload client",
+            click() {
+                win.webContents.reload();
+            }
+        },
         {
             label: "Launch Arguments",
             click: createArgumentsWindow
@@ -380,7 +405,9 @@ export async function initTray(win: BrowserWindow, setIsQuitting: (val: boolean)
     try {
         const initialImage = await getCachedTrayImage(trayVariant);
         tray = new Tray(initialImage);
-        tray.setToolTip("Bazinga");
+        updateTooltip();
+        tooltipTimer = setInterval(updateTooltip, TOOLTIP_REFRESH_MS);
+        tooltipTimer.unref();
 
         if (isLinux) {
             tray.on("click", onTrayClick);

@@ -21,13 +21,14 @@
         "start": "bun run build && electron .",
         "start:dev": "bun run build:dev && electron .",
         "start:watch": "bun run build:dev && bun run scripts/startWatch.mts",
-        "test": "bun lint && bun testTypes",
+        "test": "bun lint && bun testTypes && bun test:unit",
         "testTypes": "tsc --noEmit",
         "watch": "bun run build --watch",
         "generateMeta": "bun run scripts/utils/generateMeta.mts",
         "updateArrpcDB": "bun ./node_modules/arrpc-bun/scripts/update_db.ts",
         "postinstall": "bun updateArrpcDB && bun compileArrpc",
-        "buildEquicord": "bun run scripts/build/buildEquicord.mts"
+        "buildEquicord": "bun run scripts/build/buildEquicord.mts",
+        "test:unit": "bun test tests"
     },
     "dependencies": {
         "@types/ws": "^8.18.1",

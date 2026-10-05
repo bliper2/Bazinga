@@ -10,15 +10,18 @@ import {
     app,
     BrowserWindow,
     type BrowserWindowConstructorOptions,
+    dialog,
     Menu,
     type MenuItemConstructorOptions,
     nativeTheme,
     type Rectangle,
     screen,
-    session
+    session,
+    shell
 } from "electron";
 import { IpcCommands, IpcEvents } from "shared/IpcEvents";
 import { STATIC_DIR } from "shared/paths";
+import { REPO_SLUG } from "shared/repo";
 import { isTruthy } from "shared/utils/guards";
 import { once } from "shared/utils/once";
 import type { SettingsStore } from "shared/utils/SettingsStore";
@@ -32,9 +35,12 @@ import { AppEvents } from "./events";
 import { spoofGnu } from "./gnuSpoofing";
 import { sendRendererCommand } from "./ipcCommands";
 import { initKeybinds } from "./keybinds";
+import { applySafeMode, explainAutomaticSafeMode, isSafeMode } from "./safeMode";
 import { Settings, State, VencordSettings } from "./settings";
+import { setupGlobalShortcuts } from "./shortcuts";
 import { addSplashLog, createSplashWindow, updateSplashMessage } from "./splash";
 import { darwinURL } from "./startup";
+import { markStartup } from "./startupTimings";
 import { destroyTray, initTray } from "./tray";
 import { clearData } from "./utils/clearData";
 import { makeLinksOpenExternally } from "./utils/makeLinksOpenExternally";
@@ -302,7 +308,7 @@ function initStaticTitle(win: BrowserWindow) {
 
     addSettingsListener("staticTitle", enabled => {
         if (enabled) {
-            win.setTitle("Bazinga");
+            win.setTitle(isSafeMode() ? "Bazinga (safe mode)" : "Bazinga");
             win.on("page-title-updated", listener);
         } else {
             win.off("page-title-updated", listener);
@@ -407,7 +413,7 @@ function buildBrowserWindowOptions(): BrowserWindowConstructorOptions {
     }
 
     if (staticTitle) {
-        options.title = "Bazinga";
+        options.title = isSafeMode() ? "Bazinga (safe mode)" : "Bazinga";
     }
 
     if (process.platform === "darwin") {
@@ -486,8 +492,53 @@ function createMainWindow() {
 
 const runVencordMain = once(() => require(VENCORD_DIR));
 
+/** Ctrl+R and F5 reload the page. The app has no menu by default, so nothing else handles them. */
+function setupReloadShortcuts(win: BrowserWindow) {
+    win.webContents.on("before-input-event", (event, input) => {
+        if (input.type !== "keyDown" || input.isAutoRepeat) return;
+
+        const modifier = process.platform === "darwin" ? input.meta : input.control;
+        const reload =
+            input.key === "F5" || (modifier && !input.shift && !input.alt && input.key.toLowerCase() === "r");
+        if (!reload) return;
+
+        event.preventDefault();
+        win.webContents.reload();
+    });
+}
+
+/** After an update, offers to open what changed. */
+function announceUpdate() {
+    const version = app.getVersion();
+    const previous = State.store.lastVersion;
+    State.store.lastVersion = version;
+    if (!previous || previous === version) return;
+
+    dialog
+        .showMessageBox(mainWin, {
+            type: "info",
+            title: "Bazinga was updated",
+            message: `Bazinga was updated to version ${version}.`,
+            buttons: ["See what changed", "Close"],
+            defaultId: 1,
+            cancelId: 1
+        })
+        .then(({ response }) => {
+            if (response === 0) shell.openExternal(`https://github.com/${REPO_SLUG}/releases/tag/v${version}`);
+        })
+        .catch(() => {});
+}
+
+/** The --branch flag wins over the setting, for this session only. */
+function currentBranch() {
+    const override = CommandLine.values.branch;
+    return override === "stable" || override === "ptb" || override === "canary"
+        ? override
+        : Settings.store.discordBranch;
+}
+
 export function loadUrl(uri: string | undefined) {
-    const branch = Settings.store.discordBranch;
+    const branch = currentBranch();
     const subdomain = branch === "canary" || branch === "ptb" ? `${branch}.` : "";
 
     // we do not rely on 'did-finish-load' because it fires even if loadURL fails which triggers early detruction of the splash
@@ -519,12 +570,20 @@ export async function createWindows() {
     addSplashLog();
     await ensureVencordFiles();
     runVencordMain();
+    applySafeMode();
+    markStartup("Equicord loaded");
 
     addSplashLog();
     mainWin = createMainWindow();
+    markStartup("Window created");
+    setupGlobalShortcuts(mainWin);
+    setupReloadShortcuts(mainWin);
 
     AppEvents.on("appLoaded", () => {
+        markStartup("Discord loaded");
         splash?.destroy();
+        explainAutomaticSafeMode();
+        announceUpdate();
 
         if (!startMinimized) {
             if (splash) mainWin?.show();

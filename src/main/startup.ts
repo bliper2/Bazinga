@@ -6,6 +6,7 @@
 
 import "./updater";
 import "./ipc";
+import "./bazingaIpc";
 import "./userAssets";
 import "./vesktopProtocol";
 
@@ -17,8 +18,11 @@ import { DATA_DIR, SESSION_DATA_DIR } from "./constants";
 import { createFirstLaunchTour } from "./firstLaunch";
 import { createWindows } from "./mainWindow";
 import { registerMediaPermissionsHandler } from "./mediaPermissions";
+import { recordStart } from "./safeMode";
 import { registerScreenShareHandler } from "./screenShare";
 import { Settings, State } from "./settings";
+import { markStartup } from "./startupTimings";
+import { startTelemetryBlocking } from "./telemetry";
 import { setAsDefaultProtocolClient } from "./utils/setAsDefaultProtocolClient";
 import { isDeckGameMode } from "./utils/steamOS";
 
@@ -45,8 +49,26 @@ function clearStaleWasmCodeCache() {
     State.store.lastElectronVersion = electron;
 }
 
+/** Chromium switches for each performance preset. They only take effect at startup. */
+function applyPerformanceSettings() {
+    const { performancePreset, lowEndMode } = Settings.store;
+    const switches: string[] = [];
+
+    // GPU rasterization draws page content on the graphics card instead of the processor.
+    if (performancePreset === "performance") switches.push("enable-gpu-rasterization", "enable-zero-copy");
+    // Low-end device mode lowers memory use; reduced motion makes Discord skip its animations.
+    if (performancePreset === "battery" || lowEndMode) {
+        switches.push("enable-low-end-device-mode", "force-prefers-reduced-motion", "disable-smooth-scrolling");
+    }
+
+    for (const name of new Set(switches)) app.commandLine.appendSwitch(name);
+    if (switches.length) console.log("Performance switches:", [...new Set(switches)].join(", "));
+}
+
 function init() {
+    recordStart();
     clearStaleWasmCodeCache();
+    applyPerformanceSettings();
     setAsDefaultProtocolClient("discord");
 
     const { disableSmoothScroll, hardwareAcceleration, hardwareVideoAcceleration } = Settings.store;
@@ -136,6 +158,8 @@ function init() {
     app.whenReady().then(async () => {
         if (process.platform === "win32") app.setAppUserModelId("io.github.bliper2.bazinga");
 
+        markStartup("App ready");
+        startTelemetryBlocking();
         registerScreenShareHandler();
         registerMediaPermissionsHandler();
 
