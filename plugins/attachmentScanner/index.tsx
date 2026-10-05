@@ -10,14 +10,21 @@ import { definePluginSettings } from "@api/Settings";
 import { OptionType } from "@utils/types";
 import type { Message } from "@vencord/discord-types";
 
-import { definePlugin } from "../_bazinga";
-import { checkFileName } from "./check";
+import { bazingaLogger, confirmDialog, definePlugin, guard } from "../_bazinga";
+import { checkFileName, isExecutableName } from "./check";
+
+const logger = bazingaLogger("AttachmentScanner");
 
 const settings = definePluginSettings({
     includeArchives: {
         type: OptionType.BOOLEAN,
         description: "Also warn about archives (.zip, .rar, .7z), which are often used to hide malware",
         default: false
+    },
+    confirmDownload: {
+        type: OptionType.BOOLEAN,
+        description: "Ask before downloading a file that can run code",
+        default: true
     }
 });
 
@@ -42,6 +49,45 @@ function Warning({ message }: { message: Message; }) {
     );
 }
 
+// Set while the user has chosen "Download anyway", so the re-sent click is let through.
+let bypass = false;
+
+function attachmentName(anchor: HTMLAnchorElement) {
+    try {
+        const url = new URL(anchor.href);
+        if (!/^(cdn|media)\.discordapp\.(com|net)$/.test(url.hostname) || !url.pathname.startsWith("/attachments/")) return null;
+        return decodeURIComponent(url.pathname.split("/").pop() ?? "");
+    } catch {
+        return null;
+    }
+}
+
+const onClick = guard(logger, "Failed to check download", (e: MouseEvent) => {
+    if (bypass || !settings.store.confirmDownload) return;
+
+    const anchor = (e.target as Element | null)?.closest?.("a[href]") as HTMLAnchorElement | null;
+    const name = anchor && attachmentName(anchor);
+    if (!anchor || !name || !isExecutableName(name)) return;
+
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    confirmDialog({
+        title: "Download this file?",
+        body: `${name} can run programs on your computer. Only download it if you trust the sender and expected it.`,
+        confirmText: "Download anyway",
+        cancelText: "Cancel"
+    }).then(choice => {
+        if (choice !== "confirm") return;
+        bypass = true;
+        try {
+            anchor.click();
+        } finally {
+            bypass = false;
+        }
+    });
+});
+
 export default definePlugin({
     name: "AttachmentScanner",
     description: "Warns under messages with attachments that can run code on your computer or hide their real file type.",
@@ -53,5 +99,13 @@ export default definePlugin({
     renderMessageAccessory: props => {
         const message = props.message as Message;
         return message.attachments?.length ? <Warning message={message} /> : null;
+    },
+
+    start() {
+        document.addEventListener("click", onClick, true);
+    },
+
+    stop() {
+        document.removeEventListener("click", onClick, true);
     }
 });

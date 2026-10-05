@@ -8,7 +8,8 @@
 
 import { Logger } from "@utils/Logger";
 import equicordDefinePlugin, { PluginAuthor, PluginDef } from "@utils/types";
-import { Alerts } from "@webpack/common";
+import type { Message } from "@vencord/discord-types";
+import { Alerts, MessageStore } from "@webpack/common";
 import type { ReactNode } from "react";
 
 export const BazingaDevs = {
@@ -187,4 +188,15 @@ export function codeBlocks(content: string, languages: string[]): string[] {
         if (wanted.has(match[1].toLowerCase())) blocks.push(match[2]);
     }
     return blocks;
+}
+
+/** Finds the Discord message a page element belongs to. Message rows have ids like `chat-messages-<channel>-<message>`. */
+export function messageFromElement(el: Element): Message | undefined {
+    const match = /^chat-messages-(\d+)-(\d+)$/.exec(el.closest('[id^="chat-messages-"]')?.id ?? "");
+    return match ? MessageStore.getMessage(match[1], match[2]) : undefined;
+}
+
+/** The messages of a channel that Discord has already loaded, oldest first. No requests are made. */
+export function loadedMessages(channelId: string): Message[] {
+    return MessageStore.getMessages(channelId)?._array ?? [];
 }

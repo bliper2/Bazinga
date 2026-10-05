@@ -19,6 +19,11 @@ const HARMLESS_LOOKING = new Set(["pdf", "jpg", "jpeg", "png", "gif", "txt", "do
 
 const BIDI_CONTROL = /[‪-‮⁦-⁩‎‏]/;
 
+/** True for files that can run code when opened. */
+export function isExecutableName(fileName: string) {
+    return EXECUTABLE.has(fileName.toLowerCase().split(".").pop() ?? "");
+}
+
 /** Returns human-readable reasons why a file name looks dangerous. */
 export function checkFileName(fileName: string, includeArchives: boolean): string[] {
     const reasons: string[] = [];

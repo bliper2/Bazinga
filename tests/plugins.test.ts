@@ -14,7 +14,9 @@ import { parseCsv } from "../plugins/csvTablePreview/csv";
 import { hasGps, stripGps } from "../plugins/exifStripWarning/exif";
 import { checkLink } from "../plugins/linkGuard/analyze";
 import { extractMath } from "../plugins/mathRender/extract";
-import { findSecrets } from "../plugins/secretLeakGuard/patterns";
+import { looksLike } from "../plugins/impersonationAlert/compare";
+import { findSecrets, isSensitiveFileName } from "../plugins/secretLeakGuard/patterns";
+import { tameCombiningMarks } from "../plugins/zalgoFilter/tame";
 
 const linkOptions = { punycode: true, ipAddress: true, mismatchedText: true, lookalike: true, trustedDomains: [] as string[] };
 
@@ -127,4 +129,35 @@ test("CsvTablePreview parses quotes, delimiters and row limits", () => {
     expect(parseCsv("a;b\r\n1;2", 10)).toEqual([["a", "b"], ["1", "2"]]);
     expect(parseCsv("a\tb\n1\t2\n3\t4", 2)).toEqual([["a", "b"], ["1", "2"]]);
     expect(parseCsv("a,b\n\n1,2\n", 10)).toEqual([["a", "b"], ["1", "2"]]);
+});
+
+test("LinkGuard flags gift-scam wording on unofficial domains only", () => {
+    expect(checkLink("https://free-nitro-claim.xyz/", "x", linkOptions).length).toBeGreaterThan(0);
+    expect(checkLink("https://robux-generator.net/", "x", linkOptions).length).toBeGreaterThan(0);
+    expect(checkLink("https://discord.com/nitro", "x", linkOptions)).toEqual([]);
+    expect(checkLink("https://example.com/giftshop", "x", linkOptions)).toEqual([]);
+});
+
+test("SecretLeakGuard flags files that usually hold secrets", () => {
+    for (const name of [".env", ".env.local", "id_rsa", "server.pem", "my.key", "wallet.dat", "credentials.json", "backup.kdbx"]) {
+        expect(isSensitiveFileName(name)).toBe(true);
+    }
+    for (const name of ["photo.png", "environment.txt", "keynote.pptx", "monkey.png"]) {
+        expect(isSensitiveFileName(name)).toBe(false);
+    }
+});
+
+test("ZalgoFilter keeps normal accents and trims stacked ones", () => {
+    expect(tameCombiningMarks("café résumé", 2)).toBe("café résumé");
+    const glitchy = "h̀́̂̃̄̅i";
+    expect(tameCombiningMarks(glitchy, 2)).toBe("h̀́i");
+    expect(tameCombiningMarks(glitchy, 0)).toBe("hi");
+});
+
+test("ImpersonationAlert flags near-identical names only", () => {
+    expect(looksLike("Alexander", "Alexandr")).toBe(true);
+    expect(looksLike("Alexander", "A1exander")).toBe(true);
+    expect(looksLike("Alexander", "alexander")).toBe(false);
+    expect(looksLike("Alexander", "Benjamin")).toBe(false);
+    expect(looksLike("Bob", "Rob")).toBe(false);
 });

@@ -1,0 +1,22 @@
+[data-bz-mass="hidden"] {
+    position: relative;
+    max-height: 1.5rem;
+    overflow: hidden;
+    color: transparent;
+    cursor: pointer;
+    user-select: none;
+}
+
+[data-bz-mass="hidden"] * {
+    visibility: hidden;
+}
+
+[data-bz-mass="hidden"]::before {
+    content: "Message with many mentions hidden. Click to show.";
+    position: absolute;
+    inset: 0;
+    visibility: visible;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-style: italic;
+}

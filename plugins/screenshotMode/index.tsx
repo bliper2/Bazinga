@@ -9,7 +9,7 @@ import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { EyeIcon } from "@components/Icons";
 import { OptionType } from "@utils/types";
-import { showToast, Toasts, useEffect, useState } from "@webpack/common";
+import { showToast, Toasts, useEffect, UserStore, useState } from "@webpack/common";
 
 import { bazingaLogger, definePlugin, guard, matchesShortcut } from "../_bazinga";
 import managedStyle from "./styles.css?managed";
@@ -28,6 +28,11 @@ const settings = definePluginSettings({
     names: { type: OptionType.BOOLEAN, description: "Blur usernames and nicknames", default: true, onChange: () => applyClasses() },
     messages: { type: OptionType.BOOLEAN, description: "Blur message text and images", default: false, onChange: () => applyClasses() },
     servers: { type: OptionType.BOOLEAN, description: "Blur server icons", default: false, onChange: () => applyClasses() },
+    autoWhileStreaming: {
+        type: OptionType.BOOLEAN,
+        description: "Turn screenshot mode on by itself while you are screen sharing, and off again when you stop",
+        default: false
+    },
     revealOnHover: {
         type: OptionType.BOOLEAN,
         description: "Show a blurred item while the mouse is over it",
@@ -37,6 +42,8 @@ const settings = definePluginSettings({
 });
 
 let active = false;
+// True when streaming turned the mode on, so only then does the end of the stream turn it off.
+let startedByStream = false;
 const listeners = new Set<(active: boolean) => void>();
 
 function applyClasses() {
@@ -88,6 +95,20 @@ export default definePlugin({
         "Toggle screenshot mode": () => setActive(!active)
     },
 
+    flux: {
+        // The stream key ends with the id of the person streaming.
+        STREAM_CREATE({ streamKey }: { streamKey?: string; }) {
+            if (!settings.store.autoWhileStreaming || active || !streamKey?.endsWith(UserStore.getCurrentUser().id)) return;
+            startedByStream = true;
+            setActive(true);
+        },
+        STREAM_DELETE({ streamKey }: { streamKey?: string; }) {
+            if (!startedByStream || !streamKey?.endsWith(UserStore.getCurrentUser().id)) return;
+            startedByStream = false;
+            setActive(false);
+        }
+    },
+
     headerBarButton: {
         icon: EyeIcon,
         render: () => <ToggleButton />
@@ -100,6 +121,7 @@ export default definePlugin({
     stop() {
         document.removeEventListener("keydown", onKeyDown, true);
         active = false;
+        startedByStream = false;
         applyClasses();
     }
 });

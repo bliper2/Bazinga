@@ -8,12 +8,17 @@ import { definePluginSettings } from "@api/Settings";
 import { OptionType } from "@utils/types";
 
 import { confirmDialog, definePlugin } from "../_bazinga";
-import { findSecrets } from "./patterns";
+import { findSecrets, isSensitiveFileName } from "./patterns";
 
 const settings = definePluginSettings({
     checkCards: {
         type: OptionType.BOOLEAN,
         description: "Also warn about payment card numbers",
+        default: true
+    },
+    checkFiles: {
+        type: OptionType.BOOLEAN,
+        description: "Also warn about files that usually hold secrets, like .env files and private keys",
         default: true
     },
     checkPasswords: {
@@ -31,11 +36,16 @@ export default definePlugin({
     enabledByDefault: true,
     settings,
 
-    async onBeforeMessageSend(_channelId, message) {
+    async onBeforeMessageSend(_channelId, message, options) {
         const found = findSecrets(message.content, {
             cards: settings.store.checkCards,
             passwords: settings.store.checkPasswords
         });
+        if (settings.store.checkFiles) {
+            for (const upload of options.uploads ?? []) {
+                if (isSensitiveFileName(upload.filename)) found.push(`a file that usually holds secrets (${upload.filename})`);
+            }
+        }
         if (!found.length) return;
 
         const choice = await confirmDialog({

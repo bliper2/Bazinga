@@ -48,6 +48,13 @@ function hasCardNumber(text: string) {
     return false;
 }
 
+const SENSITIVE_FILE = /(^|\/)(\.env(\..+)?|id_(rsa|dsa|ecdsa|ed25519)|credentials(\.json)?|secrets?\.(json|ya?ml|toml)|\.npmrc|\.pypirc|\.netrc|wallet\.dat)$|\.(pem|key|p12|pfx|ppk|kdbx|keystore|jks)$/i;
+
+/** True for file names that usually hold passwords or private keys. */
+export function isSensitiveFileName(fileName: string) {
+    return SENSITIVE_FILE.test(fileName.trim());
+}
+
 /** Returns a description of each kind of secret found in the text. */
 export function findSecrets(text: string, options: { cards: boolean; passwords: boolean; }) {
     const found = PATTERNS.filter(([, re]) => re.test(text)).map(([kind]) => kind);

@@ -33,8 +33,11 @@ const BRANDS: Record<string, { keyword: string; domains: string[]; }> = {
     Microsoft: { keyword: "microsoft", domains: ["microsoft.com", "microsoftonline.com", "live.com", "xbox.com", "office.com"] }
 };
 
+/** Words that show up in fake gift and giveaway sites. Only checked on domains that are not official ones. */
+const BAIT_WORDS = /(free|claim|gift|giveaway|airdrop|nitro|boost)[-.]?(nitro|gift|boost|drop|steam|robux|vbucks|skins|crypto)|(?:nitro|robux|vbucks)[-.]?(free|gift|claim|generator)/i;
+
 /** Collapses characters that look alike, so "dlsc0rd" and "discord" compare equal. */
-function skeleton(text: string) {
+export function skeleton(text: string) {
     return text
         .toLowerCase()
         .replace(/rn/g, "m")
@@ -49,7 +52,7 @@ function skeleton(text: string) {
 }
 
 /** Edit distance that counts swapping two neighbouring letters as one edit. */
-function editDistance(a: string, b: string) {
+export function editDistance(a: string, b: string) {
     const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array<number>(b.length).fill(0)]);
     for (let j = 1; j <= b.length; j++) d[0][j] = j;
     for (let i = 1; i <= a.length; i++) {
@@ -129,6 +132,7 @@ export function checkLink(href: string, linkText: string, options: LinkCheckOpti
     if (options.lookalike) {
         const reason = lookalikeReason(host);
         if (reason) reasons.push(reason);
+        else if (BAIT_WORDS.test(host)) reasons.push("The address uses words typical of free-gift scams.");
     }
 
     return reasons;
