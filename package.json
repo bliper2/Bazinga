@@ -1,7 +1,7 @@
 {
     "name": "bazinga",
     "desktopName": "bazinga",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "private": true,
     "description": "Bazinga is a custom Discord desktop app with Equicord built in",
     "keywords": [],
