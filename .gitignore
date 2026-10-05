@@ -7,3 +7,5 @@ node_modules
 resources
 # Copied from src/shared by scripts/build/buildEquicord.mts
 plugins/_bazinga/themeTemplate.ts
+# Written by `bun run packaging`
+/packaging/

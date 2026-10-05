@@ -155,7 +155,9 @@ export const VesktopNative = {
                 password
             ),
         restoreBundledEquicord: () => invoke<void>(IpcEvents.RESTORE_BUNDLED_EQUICORD),
-        getDebugInfo: () => invoke<string>(IpcEvents.GET_DEBUG_INFO)
+        getDebugInfo: () => invoke<string>(IpcEvents.GET_DEBUG_INFO),
+        getCacheSize: () => invoke<number>(IpcEvents.GET_CACHE_SIZE),
+        clearCache: () => invoke<void>(IpcEvents.CLEAR_CACHE)
     },
     debug: {
         launchGpu: () => invoke<void>(IpcEvents.DEBUG_LAUNCH_GPU),

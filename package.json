@@ -30,7 +30,8 @@
         "buildEquicord": "bun run scripts/build/buildEquicord.mts",
         "test:unit": "bun test tests",
         "docs": "bun run scripts/docs/generate.mts",
-        "docs:check": "bun run scripts/docs/generate.mts --check"
+        "docs:check": "bun run scripts/docs/generate.mts --check",
+        "packaging": "bun run scripts/packaging/generate.mts"
     },
     "dependencies": {
         "@types/ws": "^8.18.1",

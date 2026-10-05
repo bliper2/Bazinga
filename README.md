@@ -163,6 +163,10 @@ There are two release channels in this repository:
 Builds are not code-signed yet. Windows SmartScreen and macOS Gatekeeper will warn on install, and auto-update on
 macOS does not work without signing.
 
+After a release is published, `bun run packaging X.Y.Z` writes Scoop, Homebrew, winget and Arch manifests for it into
+`packaging/X.Y.Z/`, filled in from the release's `SHA256SUMS.txt`. Nothing is submitted for you: copy the files to the
+package manager's repository.
+
 ## Updating upstream
 
 ```sh

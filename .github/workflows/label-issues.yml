@@ -1,0 +1,31 @@
+name: Label issues
+
+# Adds a "plugin: <name>" label to an issue that names a plugin or theme in the bug report form.
+
+on:
+    issues:
+        types: [opened, edited]
+
+permissions:
+    issues: write
+
+jobs:
+    label:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/github-script@v7
+              with:
+                  script: |
+                      const body = context.payload.issue.body ?? "";
+                      const match = /### Plugin or theme involved\s+([^\n]+)/.exec(body);
+                      // The text comes from the issue, so only plain names are accepted.
+                      const name = match?.[1].trim();
+                      if (!name || !/^[\w .()-]{1,40}$/.test(name) || name === "_No response_") return;
+
+                      const label = `plugin: ${name}`;
+                      try {
+                          await github.rest.issues.getLabel({ ...context.repo, name: label });
+                      } catch {
+                          await github.rest.issues.createLabel({ ...context.repo, name: label, color: "f5a524" });
+                      }
+                      await github.rest.issues.addLabels({ ...context.repo, issue_number: context.issue.number, labels: [label] });

@@ -11,10 +11,11 @@ import "./userAssets";
 import "./vesktopProtocol";
 
 import { app, BrowserWindow, nativeTheme } from "electron";
-import { rmSync } from "fs";
+import { existsSync, readdirSync, rmSync } from "fs";
 import { join } from "path";
 
-import { DATA_DIR, SESSION_DATA_DIR } from "./constants";
+import { isValidProfileName } from "./cli";
+import { DATA_DIR, PROFILES_DIR, SESSION_DATA_DIR } from "./constants";
 import { createFirstLaunchTour } from "./firstLaunch";
 import { createWindows } from "./mainWindow";
 import { registerMediaPermissionsHandler } from "./mediaPermissions";
@@ -63,6 +64,26 @@ function applyPerformanceSettings() {
 
     for (const name of new Set(switches)) app.commandLine.appendSwitch(name);
     if (switches.length) console.log("Performance switches:", [...new Set(switches)].join(", "));
+}
+
+/** On Windows, right-clicking the taskbar icon lists the profiles, so a second account opens in one click. */
+function setupJumpList() {
+    if (process.platform !== "win32" || !existsSync(PROFILES_DIR)) return;
+
+    const profiles = readdirSync(PROFILES_DIR, { withFileTypes: true })
+        .filter(d => d.isDirectory() && isValidProfileName(d.name))
+        .slice(0, 10);
+
+    app.setUserTasks(
+        profiles.map(({ name }) => ({
+            program: process.execPath,
+            arguments: `--profile "${name}"`,
+            iconPath: process.execPath,
+            iconIndex: 0,
+            title: `Open profile ${name}`,
+            description: `Open Bazinga with the profile ${name}`
+        }))
+    );
 }
 
 function init() {
@@ -159,6 +180,7 @@ function init() {
         if (process.platform === "win32") app.setAppUserModelId("io.github.bliper2.bazinga");
 
         markStartup("App ready");
+        setupJumpList();
         startTelemetryBlocking();
         registerScreenShareHandler();
         registerMediaPermissionsHandler();

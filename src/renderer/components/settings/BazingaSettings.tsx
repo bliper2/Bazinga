@@ -173,43 +173,66 @@ export const BackupPanel: SettingsComponent = () => {
     );
 };
 
-export const MaintenanceButtons: SettingsComponent = () => (
-    <SimpleErrorBoundary>
-        <Heading tag="h5">Troubleshooting</Heading>
-        <div className={cl("button-grid")}>
-            <Button onClick={() => native().reload()}>Reload client</Button>
-            <Button
-                onClick={async () => {
-                    try {
-                        const plugins = Object.keys(Vencord.Plugins.plugins)
-                            .filter(name => Vencord.Plugins.isPluginEnabled(name))
-                            .sort();
-                        await copyToClipboard(
-                            `${await native().getDebugInfo()}\nEnabled plugins (${plugins.length}): ${plugins.join(", ")}`
-                        );
-                        toast("Debug info copied. Paste it into your bug report.", Toasts.Type.SUCCESS);
-                    } catch (err) {
-                        toast(errorText(err), Toasts.Type.FAILURE);
-                    }
-                }}
-            >
-                Copy debug info
-            </Button>
-            <Button
-                onClick={() => {
-                    if (confirm("Replace Equicord with the version that came with this app? The app restarts.")) {
-                        native()
-                            .restoreBundledEquicord()
-                            .catch(err => toast(errorText(err), Toasts.Type.FAILURE));
-                    }
-                }}
-            >
-                Restore bundled Equicord
-            </Button>
-        </div>
-        <Paragraph className={Margins.top8}>
-            Debug info has no file paths, accounts or tokens. Start Bazinga with <code>--safe-mode</code> to run with
-            every plugin and theme off.
-        </Paragraph>
-    </SimpleErrorBoundary>
-);
+export const MaintenanceButtons: SettingsComponent = () => {
+    const [cacheSize, setCacheSize] = useState<number | null>(null);
+    useEffect(() => {
+        native()
+            .getCacheSize()
+            .then(setCacheSize)
+            .catch(() => {});
+    }, []);
+
+    return (
+        <SimpleErrorBoundary>
+            <Heading tag="h5">Troubleshooting</Heading>
+            <div className={cl("button-grid")}>
+                <Button onClick={() => native().reload()}>Reload client</Button>
+                <Button
+                    onClick={async () => {
+                        try {
+                            const plugins = Object.keys(Vencord.Plugins.plugins)
+                                .filter(name => Vencord.Plugins.isPluginEnabled(name))
+                                .sort();
+                            await copyToClipboard(
+                                `${await native().getDebugInfo()}\nEnabled plugins (${plugins.length}): ${plugins.join(", ")}`
+                            );
+                            toast("Debug info copied. Paste it into your bug report.", Toasts.Type.SUCCESS);
+                        } catch (err) {
+                            toast(errorText(err), Toasts.Type.FAILURE);
+                        }
+                    }}
+                >
+                    Copy debug info
+                </Button>
+                <Button
+                    onClick={async () => {
+                        try {
+                            await native().clearCache();
+                            setCacheSize(await native().getCacheSize());
+                            toast("Cache cleared. Your login and settings were not touched.", Toasts.Type.SUCCESS);
+                        } catch (err) {
+                            toast(errorText(err), Toasts.Type.FAILURE);
+                        }
+                    }}
+                >
+                    Clear cache{cacheSize === null ? "" : ` (${Math.round(cacheSize / 1024 / 1024)} MB)`}
+                </Button>
+                <Button
+                    onClick={() => {
+                        if (confirm("Replace Equicord with the version that came with this app? The app restarts.")) {
+                            native()
+                                .restoreBundledEquicord()
+                                .catch(err => toast(errorText(err), Toasts.Type.FAILURE));
+                        }
+                    }}
+                >
+                    Restore bundled Equicord
+                </Button>
+            </div>
+            <Paragraph className={Margins.top8}>
+                Debug info has no file paths, accounts or tokens. Start Bazinga with <code>--safe-mode</code> to run
+                with every plugin and theme off.
+            </Paragraph>
+        </SimpleErrorBoundary>
+    );
+};

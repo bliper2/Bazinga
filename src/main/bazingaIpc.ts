@@ -7,7 +7,7 @@
 // IPC handlers for the Bazinga-only features in the settings page.
 
 import { spawn } from "child_process";
-import { app, dialog } from "electron";
+import { app, dialog, session } from "electron";
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 import { IpcEvents } from "shared/IpcEvents";
@@ -76,6 +76,13 @@ handle(IpcEvents.GET_DEBUG_INFO, () =>
         `Hardware acceleration: ${Settings.store.hardwareAcceleration}`
     ].join("\n")
 );
+
+// Only the cache of downloaded files is cleared. Logins, cookies and settings are not touched.
+handle(IpcEvents.GET_CACHE_SIZE, () => session.defaultSession.getCacheSize());
+handle(IpcEvents.CLEAR_CACHE, async () => {
+    await session.defaultSession.clearCache();
+    await session.defaultSession.clearCodeCaches({});
+});
 
 handle(IpcEvents.RESTORE_BUNDLED_EQUICORD, () => {
     restoreBundledEquicord();

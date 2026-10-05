@@ -23,9 +23,10 @@ function BlockedList() {
     const [data, setData] = useState<Blocked | null>(null);
     const [failed, setFailed] = useState(false);
 
+    // Plugins are updated separately from the app, so an older app may not have this yet.
     const refresh = () =>
-        VesktopNative.bazinga
-            .getBlockedRequests()
+        Promise.resolve()
+            .then(() => VesktopNative.bazinga.getBlockedRequests())
             .then(setData)
             .catch(err => {
                 logger.warn("Could not read the block list", err);
@@ -36,7 +37,7 @@ function BlockedList() {
         refresh();
     }, []);
 
-    if (failed) return <Paragraph>This needs the Bazinga app, so it is not available here.</Paragraph>;
+    if (failed) return <Paragraph>This needs a newer version of the Bazinga app. Update the app to see the list.</Paragraph>;
     if (!data) return <Paragraph>Loading…</Paragraph>;
 
     return (

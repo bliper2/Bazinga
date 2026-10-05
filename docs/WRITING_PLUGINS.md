@@ -83,6 +83,13 @@ The first argument of a native function is always the event. Treat every argumen
 See [`plugins/betterDiscordThemes/native.ts`](../plugins/betterDiscordThemes/native.ts) for an example that checks
 file names and addresses.
 
+## Plugins and the app update separately
+
+Equicord, and with it your plugin, can be updated without updating the app. A plugin that uses `VesktopNative.bazinga`
+(the features the app adds, such as `reload` and `getBlockedRequests`) must still work when the app is older and does
+not have them yet. Call them inside a promise chain with a `.catch`, as `plugins/autoReload` does, and show a plain
+message when the feature is missing.
+
 ## Tests
 
 Put logic that does not need Discord into its own file, with no imports from Discord or Equicord, and test it with

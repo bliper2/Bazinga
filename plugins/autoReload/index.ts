@@ -49,7 +49,10 @@ function reloadSoon() {
 
     timer = setTimeout(() => {
         timer = undefined;
-        VesktopNative.bazinga.reload().catch(() => window.location.reload());
+        // Plugins are updated separately from the app, so an older app may not have this yet.
+        Promise.resolve()
+            .then(() => VesktopNative.bazinga.reload())
+            .catch(() => window.location.reload());
     }, seconds * 1000);
 }
 
