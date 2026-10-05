@@ -33,6 +33,12 @@ if (existsSync(PLUGINS)) {
     }
 }
 
+// Code that the app and the plugins both use lives in src/shared. Copy it next to the shared plugin helpers
+// so plugins can import it as ../_bazinga/<file>. These copies are generated and not committed.
+const SHARED_FILES = ["themeTemplate.ts"];
+mkdirSync(join(USERPLUGINS, "_bazinga"), { recursive: true });
+for (const file of SHARED_FILES) copyFileSync(join(ROOT, "src/shared", file), join(USERPLUGINS, "_bazinga", file));
+
 // Small edits to upstream Equicord. Each one must match exactly once, so a change upstream fails the build loudly
 // instead of silently shipping a broken feature.
 const PATCHES = [

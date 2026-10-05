@@ -37,59 +37,56 @@ Bazinga updates itself when a new release is published. See [CHANGELOG.md](CHANG
 
 ## Features
 
-- Equicord preinstalled, including the Bazinga plugins from [`plugins/`](plugins). Search the Plugins page for
-  "bazinga" to list them.
+**The app**
+
+- Equicord preinstalled, plus 63 Bazinga plugins and 16 themes by orgeco (full list: [docs/PLUGINS.md](docs/PLUGINS.md)).
+  Search the Plugins page for "bazinga" to list the plugins in the app.
 - Discord Stable, PTB and Canary. Pick one on first launch or under **Settings → Bazinga Settings → Discord Branch**.
   Switching reloads the client right away. Each branch keeps its own login.
-- App updates through GitHub Releases (electron-updater)
-- Equicord updates on its own, from **Settings → Equicord → Updater**, without reinstalling the app
-- The installer ships an Equicord build, so the first launch works offline
-- Everything from Equibop: Linux screen share with audio, Wayland, arRPC, tray customization
+- **Profiles:** run several accounts side by side, each with its own login and settings
+  (`--profile name`, or Settings → Profiles).
+- **Safe mode** (`--safe-mode`): starts with every plugin and theme off and saves nothing, for finding out what
+  breaks Discord. It starts by itself after three starts in a row that failed.
+- **Reload client** from the tray, Ctrl+R and F5, and automatically after turning on a plugin that needs it
+  (AutoReload plugin).
+- **Performance:** presets, a low-end mode, and Discord's analytics and crash reports blocked before they leave your
+  computer. See Settings → Bazinga Settings → Performance.
+- Global shortcuts to show or hide the window and to mute.
+- **Backup:** export and import all settings, Equicord plugins, QuickCSS and themes as one file, optionally
+  encrypted with a password.
+- Updates through GitHub Releases. Equicord and the Bazinga plugins update on their own from **Settings → Equicord →
+  Updater**, without reinstalling the app. The installer includes an Equicord build, so the first launch works
+  offline.
+- Everything from Equibop: Linux screen share with audio, Wayland, arRPC, tray customization.
 
-### Bazinga plugins
+**Plugin highlights**
 
-| Plugin                  | What it does                                                                                    | On by default |
-| ----------------------- | ----------------------------------------------------------------------------------------------- | ------------- |
-| **BetterDiscordThemes** | Browse, search, preview and install every theme from the BetterDiscord theme store. Open it from Settings, BetterDiscord Themes | Yes |
-| **LinkGuard**           | Warns before opening links that imitate other sites, hide their real address or point to raw IPs. Works offline | Yes |
-| **ChannelNotes**        | Private notes per channel or DM, from a button in the channel toolbar                          | No            |
-| **CollapseLong**        | Collapses very long messages. Click one to expand it                                            | No            |
-| **PerfOverlay**         | Overlay with FPS, JavaScript heap, page size and blocking tasks                                 | No            |
-| **ScreenshotMode**      | Blurs names, profile pictures and optionally messages and server icons. Ctrl+Shift+B or the eye button | No |
-| **SecretLeakGuard**     | Asks before you send something that looks like a password, API key, token or card number      | Yes           |
-| **AttachmentScanner**   | Warns under attachments that can run code or hide their real type (`.exe`, `photo.jpg.exe`)    | Yes           |
-| **ExifStripWarning**    | Warns before you upload a photo containing GPS location and can remove it without re-encoding | Yes           |
-| **AccountAgeBadge**     | Marks accounts younger than 30 days in chat and the member list                                 | No            |
-| **QuietHours**          | Silences notifications and their sounds during set hours, without changing your status         | No            |
-| **DraftCenter**         | Title-bar button listing unsent drafts from every channel, to open or discard                   | No            |
-| **Reminders**           | Right-click a message, Remind me, and get a notification later                                  | No            |
-| **ScratchPad**          | A notepad you can open from the title bar anywhere in Discord                                   | No            |
-| **MathRender**          | Shows LaTeX between `$$ … $$` as formatted equations (KaTeX, loaded on first use)               | No            |
-| **CopyAsMarkdown**      | Right-click, Copy as Markdown: quote with author and a link back                                | No            |
-| **ReplyChainViewer**    | Right-click a reply, View reply chain, to see the whole conversation                           | No            |
-| **ReadingTime**         | "3 min read" next to long messages                                                              | No            |
-| **Censor**              | Hides words you choose in messages, on your screen only                                         | No            |
-| **JsonPrettify**        | ```` ```json ```` blocks as a collapsible tree                                                  | No            |
-| **CsvTablePreview**     | ```` ```csv ```` blocks and .csv attachments as tables                                          | No            |
-| **MermaidRender**       | ```` ```mermaid ```` blocks as diagrams (Mermaid, loaded on first use)                          | No            |
-| **QRCodeReader**        | Right-click an image, Scan QR code, with a scam-link warning                                    | No            |
-| **PinSearch**           | Channel toolbar button to search pinned messages                                                | No            |
-| **WorldClock**          | Title-bar clock for the time zones you choose                                                   | No            |
+| Area | Plugins |
+| ---- | ------- |
+| Privacy and safety | LinkGuard, SecretLeakGuard, AttachmentScanner, ExifStripWarning, ImpersonationAlert, InviteInspector, ShortenerExpander, QRCodeReader, AccountAgeBadge, MassMentionShield, ScreenshotMode, BlockLog |
+| Chat and reading | Readability, MathRender, MermaidRender, JsonPrettify, CsvTablePreview, RegexTester, CollapseLong, SpamCollapse, ZalgoFilter, Censor, HighlightWords, ReadingTime, ScriptBadge, CopyAsMarkdown, ReplyChainViewer, SnippetLibrary |
+| Organisation | BookmarkTags, MessageTodos, Reminders, BirthdayReminders, ChannelNotes, ScratchPad, DraftCenter, PinSearch, ColorLabels, WorkspaceProfiles, RecentChannels, FocusSessions, QuietHours, UsageStats, CalendarEvents |
+| Media | ChannelGallery, UploadShrink, ImageColorPicker, ImageCompare, GifFrameViewer, SvgPreview |
+| Accessibility | ColorBlindModes, HighContrastFocus, LiveRegionMessages, ReadAloud, Readability |
+| Themes | BetterDiscordThemes (all 114 BetterDiscord store themes), ThemeStudio, ThemeScheduler |
+| Performance and tools | LowEndMode, PerfOverlay, AutoReload, WorldClock, EmojiUsageStats, MarkdownCheatsheet, ChannelStats |
 
 ### Themes by orgeco
 
-Bazinga ships 12 themes made by orgeco. They appear under **Settings → Themes** after the first launch:
-Bazinga Midnight, Orgeco Neon, Mocha, Forest, Ocean, Sunset, Crimson, Gold and AMOLED (dark), plus
-Orgeco Sakura, Arctic and Lavender (light). They are defined in [`src/main/bundledThemes.ts`](src/main/bundledThemes.ts) and written to the
-themes folder on startup. A theme file is only replaced when its version in that file goes up, so local edits are kept.
+Bazinga ships 16 themes made by orgeco. They appear under **Settings → Themes** after the first launch: dark
+(Bazinga Midnight, Neon, Mocha, Forest, Ocean, Sunset, Crimson, Gold, AMOLED, Halloween, Winter) and light (Sakura,
+Arctic, Lavender, Spring, Summer). They are defined in [`src/main/bundledThemes.ts`](src/main/bundledThemes.ts) and
+written to the themes folder on startup. A theme file is only replaced when its version in that file goes up, so local
+edits are kept.
 
-To change any orgeco theme's accent color, add this to QuickCSS (**Settings → Themes → Edit QuickCSS**):
+To change the accent color of any of them, turn on the ThemeStudio plugin and set its accent, or add this to QuickCSS
+(**Settings → Themes → Edit QuickCSS**):
 
 ```css
 html:root { --bz-accent: #ff66aa; --bz-accent-hover: #ff8cc0; }
 ```
 
-Planned (see the roadmap below): performance settings, telemetry blocking, reload shortcuts, more plugins.
+Make your own with **Theme Studio** (pick colors, preview live, save).
 
 ## Setup
 
@@ -181,24 +178,17 @@ If Equicord changes its pnpm version, run `bun add -d pnpm@<version>` to match i
 
 ## Writing plugins
 
-A Bazinga plugin is an Equicord user plugin in its own folder under `plugins/`. Import `definePlugin` from
-`../_bazinga` instead of `@utils/types`: it adds the Bazinga author and the "bazinga" search term. Keep `name` as the
-first property with a plain string value, because Equicord's build reads it from the source. Code that needs the
-main process (network requests without CORS, file access) goes in `native.ts`. See
-[`plugins/betterDiscordThemes`](plugins/betterDiscordThemes) for an example.
-
-Wrap DOM listeners, timers and observers with `guard()` from `../_bazinga`, so an error is logged instead of breaking
-Discord. Wrap React components with `ErrorBoundary.wrap`.
-
-A full template and guide arrive in Phase 4.
+Copy [`plugins/_template`](plugins/_template) and follow [docs/WRITING_PLUGINS.md](docs/WRITING_PLUGINS.md). It covers the
+rules, the shared helpers, native code, tests and how to build.
 
 ## Roadmap
 
-- [x] Phase 2: base client, Equicord injection, app and Equicord auto-update, PTB and Canary
-- [x] BetterDiscord theme browser, 25 custom plugins and 12 themes by orgeco
-- [ ] Performance settings page, network-level telemetry blocking, Reload client in the tray
-- [ ] More plugins: ChannelGallery, BookmarkTags, UsageStats, FocusSessions, Readability, ThemeScheduler and others
-- [ ] Plugin template and authoring guide
+- [x] Base client, Equicord injection, app and Equicord auto-update, PTB and Canary
+- [x] BetterDiscord theme browser, 63 plugins, 16 themes by orgeco
+- [x] Performance settings, telemetry blocking, reload, profiles, safe mode, backup
+- [x] Plugin template and authoring guide
+- [ ] Smaller installer: download the Rich Presence helper only when it is turned on
+- [ ] Code signing for Windows and macOS builds
 
 ## Contributing
 

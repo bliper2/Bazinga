@@ -280,3 +280,16 @@ export function channelLabel(channelId: string) {
     const recipient = UserStore.getUser(channel.recipients?.[0]);
     return recipient ? `@${recipient.username}` : "Direct message";
 }
+
+/** Downloads a file from an https address, refusing anything bigger than `maxBytes`. */
+export async function fetchBlob(url: string, maxBytes: number): Promise<Blob> {
+    if (!/^https:\/\//i.test(url)) throw new Error("Only https addresses can be loaded");
+
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`The download failed (HTTP ${res.status})`);
+    if (Number(res.headers.get("content-length") ?? 0) > maxBytes) throw new Error("This file is too large");
+
+    const blob = await res.blob();
+    if (blob.size > maxBytes) throw new Error("This file is too large");
+    return blob;
+}

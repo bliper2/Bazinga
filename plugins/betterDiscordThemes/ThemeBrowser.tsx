@@ -6,6 +6,7 @@
 
 import "./styles.css";
 
+import * as DataStore from "@api/DataStore";
 import { Settings } from "@api/Settings";
 import { Button } from "@components/Button";
 import { ErrorCard } from "@components/ErrorCard";
@@ -25,6 +26,7 @@ import type { StoreTheme } from "./types";
 const Native = VencordNative.pluginHelpers.BetterDiscordThemes as PluginNative<typeof import("./native")>;
 const logger = bazingaLogger("BetterDiscordThemes");
 const cl = classNameFactory("bz-bdt-");
+const FAVORITES_KEY = "Bazinga_BDFavorites";
 
 type Sort = "downloads" | "likes" | "released" | "name";
 
@@ -48,6 +50,18 @@ function ThemeBrowser() {
     const [busy, setBusy] = useState<string | null>(null);
     const [previewing, setPreviewing] = useState<string | null>(null);
     const [enabledThemes, setEnabledThemes] = useState(Settings.enabledThemes);
+    const [favorites, setFavorites] = useState<number[]>([]);
+    const [onlyFavorites, setOnlyFavorites] = useState(false);
+
+    useEffect(() => {
+        DataStore.get<number[]>(FAVORITES_KEY).then(saved => setFavorites(saved ?? [])).catch(err => logger.warn("Could not load favorites", err));
+    }, []);
+
+    function toggleFavorite(id: number) {
+        const next = favorites.includes(id) ? favorites.filter(f => f !== id) : [...favorites, id];
+        setFavorites(next);
+        DataStore.set(FAVORITES_KEY, next).catch(err => logger.error("Could not save favorites", err));
+    }
 
     async function refreshInstalled() {
         const list = await VencordNative.themes.getThemesList();
@@ -72,10 +86,11 @@ function ThemeBrowser() {
     const visible = useMemo(() => {
         const q = query.trim().toLowerCase();
         return (themes ?? [])
+            .filter(t => !onlyFavorites || favorites.includes(t.id))
             .filter(t => tag === "all" || t.tags.includes(tag))
             .filter(t => !q || [t.name, t.author, t.description].some(s => s.toLowerCase().includes(q)))
             .sort(sorters[sort]);
-    }, [themes, query, tag, sort]);
+    }, [themes, query, tag, sort, onlyFavorites, favorites]);
 
     function setEnabled(fileName: string, enabled: boolean) {
         const next = enabled
@@ -185,6 +200,9 @@ function ThemeBrowser() {
                 />
             </div>
 
+            <label className={cl("favorites-toggle")}>
+                <input type="checkbox" checked={onlyFavorites} onChange={e => setOnlyFavorites(e.currentTarget.checked)} /> Only my favorites ({favorites.length})
+            </label>
             <Paragraph className={Margins.bottom8}>{visible.length} shown</Paragraph>
 
             <div className={cl("grid")}>
@@ -201,7 +219,17 @@ function ThemeBrowser() {
                                 ? <img className={cl("thumb")} src={theme.thumbnail} alt="" loading="lazy" />
                                 : <div className={cl("thumb")} />}
                             <div className={cl("body")}>
-                                <div className={cl("title")}>{theme.name}</div>
+                                <div className={cl("title")}>
+                                    {theme.name}
+                                    <button
+                                        className={cl("star")}
+                                        aria-pressed={favorites.includes(theme.id)}
+                                        title={favorites.includes(theme.id) ? "Remove from favorites" : "Add to favorites"}
+                                        onClick={() => toggleFavorite(theme.id)}
+                                    >
+                                        {favorites.includes(theme.id) ? "★" : "☆"}
+                                    </button>
+                                </div>
                                 <div className={cl("meta")}>
                                     by {theme.author} · v{theme.version} · {formatCount(theme.downloads)} downloads ·{" "}
                                     {formatCount(theme.likes)} likes

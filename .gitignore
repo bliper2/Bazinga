@@ -5,3 +5,5 @@ node_modules
 .idea/
 .zed
 resources
+# Copied from src/shared by scripts/build/buildEquicord.mts
+plugins/_bazinga/themeTemplate.ts

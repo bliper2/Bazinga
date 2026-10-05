@@ -76,3 +76,29 @@
     gap: 6px;
     margin-top: 4px;
 }
+
+.bz-bdt-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.bz-bdt-star {
+    padding: 0 4px;
+    border: none;
+    background: none;
+    color: var(--status-warning, #f0b232);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.bz-bdt-favorites-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    color: var(--text-default, var(--text-normal));
+    cursor: pointer;
+}

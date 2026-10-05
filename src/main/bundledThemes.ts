@@ -10,31 +10,9 @@
 
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
+import { type Palette, renderTheme } from "shared/themeTemplate";
 
 const AUTHOR = "orgeco";
-
-interface Palette {
-    /** Server list, title bar. */
-    bg0: string;
-    /** Channel list, member list. */
-    bg1: string;
-    /** Chat area. */
-    bg2: string;
-    /** Popouts, menus, message box. */
-    bg3: string;
-    /** Hover and selected rows. */
-    hover: string;
-    text: string;
-    muted: string;
-    strong: string;
-    accent: string;
-    accentHover: string;
-    /** Text drawn on top of the accent color. */
-    onAccent: string;
-    link: string;
-    border: string;
-    mention: string;
-}
 
 interface BundledTheme {
     file: string;
@@ -310,131 +288,96 @@ const THEMES: BundledTheme[] = [
             border: "#d9cdef",
             mention: "rgb(124 92 214 / 12%)"
         }
+    },
+    {
+        file: "Orgeco-Halloween.theme.css",
+        name: "Orgeco Halloween",
+        description: "Spooky purples with a pumpkin-orange glow.",
+        version: "1.2.0",
+        palette: {
+            bg0: "#0f0a14",
+            bg1: "#160e1c",
+            bg2: "#1c1224",
+            bg3: "#281a33",
+            hover: "#33213f",
+            text: "#eadcf2",
+            muted: "#a38fb0",
+            strong: "#ffffff",
+            accent: "#ff7518",
+            accentHover: "#ff9447",
+            onAccent: "#1a0a00",
+            link: "#b57bff",
+            border: "#3a2447",
+            mention: "rgb(255 117 24 / 14%)"
+        }
+    },
+    {
+        file: "Orgeco-Winter.theme.css",
+        name: "Orgeco Winter",
+        description: "Frosty midnight blues with icy highlights.",
+        version: "1.2.0",
+        palette: {
+            bg0: "#0a1119",
+            bg1: "#0f1a26",
+            bg2: "#13212f",
+            bg3: "#1a2c3e",
+            hover: "#213749",
+            text: "#e1eef9",
+            muted: "#8aa5bb",
+            strong: "#ffffff",
+            accent: "#7fd6ff",
+            accentHover: "#a7e3ff",
+            onAccent: "#00202e",
+            link: "#a5d8ff",
+            border: "#243a4f",
+            mention: "rgb(127 214 255 / 13%)"
+        }
+    },
+    {
+        file: "Orgeco-Spring.theme.css",
+        name: "Orgeco Spring",
+        description: "A fresh light theme of new-leaf greens.",
+        version: "1.2.0",
+        palette: {
+            bg0: "#e3f1dc",
+            bg1: "#edf7e8",
+            bg2: "#fbfef9",
+            bg3: "#ffffff",
+            hover: "#dcebd3",
+            text: "#2c3a27",
+            muted: "#6f8465",
+            strong: "#17210f",
+            accent: "#3d9a42",
+            accentHover: "#2f8334",
+            onAccent: "#ffffff",
+            link: "#2f8334",
+            border: "#cfe3c6",
+            mention: "rgb(61 154 66 / 12%)"
+        }
+    },
+    {
+        file: "Orgeco-Summer.theme.css",
+        name: "Orgeco Summer",
+        description: "A warm light theme of sunshine and cream.",
+        version: "1.2.0",
+        palette: {
+            bg0: "#fbe9c4",
+            bg1: "#fdf1d6",
+            bg2: "#fffaf0",
+            bg3: "#ffffff",
+            hover: "#f8e0b0",
+            text: "#43330f",
+            muted: "#8e7640",
+            strong: "#2b1f05",
+            accent: "#e8590c",
+            accentHover: "#cf4d08",
+            onAccent: "#ffffff",
+            link: "#c2410c",
+            border: "#f1d9a4",
+            mention: "rgb(232 89 12 / 12%)"
+        }
     }
 ];
-
-function render(theme: BundledTheme) {
-    const p = theme.palette;
-    return `/**
- * @name ${theme.name}
- * @author ${AUTHOR}
- * @description ${theme.description} Made by ${AUTHOR}.
- * @version ${theme.version}
- * @source https://github.com/bliper2/Bazinga
- */
-
-/*
- * Accent color. To use your own, add this to QuickCSS (Settings > Themes > Edit QuickCSS):
- *   html:root { --bz-accent: #ff66aa; --bz-accent-hover: #ff8cc0; }
- */
-:root {
-    --bz-accent: ${p.accent};
-    --bz-accent-hover: ${p.accentHover};
-}
-
-/* Doubled classes beat Discord's own theme selectors without needing !important. */
-:root:root,
-.theme-dark.theme-dark,
-.theme-darker.theme-darker,
-.theme-midnight.theme-midnight,
-.theme-light.theme-light {
-    --background-base-lowest: ${p.bg0};
-    --background-base-lower: ${p.bg1};
-    --background-base-low: ${p.bg2};
-    --background-surface-high: ${p.bg3};
-    --background-surface-higher: ${p.bg3};
-    --background-surface-highest: ${p.hover};
-    --background-tertiary: ${p.bg0};
-    --background-secondary: ${p.bg1};
-    --background-secondary-alt: ${p.bg1};
-    --background-primary: ${p.bg2};
-    --background-floating: ${p.bg3};
-    --background-nested-floating: ${p.bg3};
-    --chat-background-default: ${p.bg2};
-    --channeltextarea-background: ${p.bg3};
-    --input-background: ${p.bg3};
-    --input-background-default: ${p.bg3};
-    --input-border-default: ${p.border};
-    --input-border-hover: var(--bz-accent);
-    --input-border-active: var(--bz-accent);
-    --input-text-default: ${p.text};
-    --input-placeholder-text-default: ${p.muted};
-    --input-icon-default: ${p.muted};
-    --input-border: ${p.border};
-    --modal-background: ${p.bg2};
-    --modal-footer-background: ${p.bg1};
-    --home-background: ${p.bg2};
-    --app-frame-background: ${p.bg0};
-    --bg-base-primary: ${p.bg2};
-    --bg-base-secondary: ${p.bg1};
-    --bg-base-tertiary: ${p.bg0};
-    --bg-surface-raised: ${p.bg3};
-    --bg-surface-overlay: ${p.bg3};
-
-    --background-mod-subtle: ${p.hover};
-    --background-mod-normal: ${p.hover};
-    --background-mod-strong: ${p.hover};
-    --background-modifier-hover: ${p.hover};
-    --background-modifier-selected: ${p.hover};
-    --background-modifier-active: ${p.hover};
-    --background-message-hover: color-mix(in srgb, ${p.hover} 55%, transparent);
-    --background-mentioned: ${p.mention};
-    --background-mentioned-hover: ${p.mention};
-
-    --text-default: ${p.text};
-    --text-normal: ${p.text};
-    --text-secondary: ${p.muted};
-    --text-muted: ${p.muted};
-    --text-strong: ${p.strong};
-    --header-primary: ${p.strong};
-    --header-secondary: ${p.muted};
-    --channels-default: ${p.muted};
-    --interactive-normal: ${p.muted};
-    --interactive-muted: color-mix(in srgb, ${p.muted} 55%, transparent);
-    --interactive-hover: ${p.text};
-    --interactive-active: ${p.strong};
-    --interactive-text-default: ${p.muted};
-    --interactive-text-hover: ${p.text};
-    --interactive-text-active: ${p.strong};
-    --icon-default: ${p.muted};
-    --icon-strong: ${p.strong};
-    --text-link: ${p.link};
-
-    --brand-500: var(--bz-accent);
-    --brand-560: var(--bz-accent-hover);
-    --brand-600: var(--bz-accent-hover);
-    --brand-experiment: var(--bz-accent);
-    --brand-experiment-560: var(--bz-accent-hover);
-    --brand-experiment-600: var(--bz-accent-hover);
-    --background-brand: var(--bz-accent);
-    --text-brand: var(--bz-accent);
-    --control-brand-foreground: var(--bz-accent);
-    --control-brand-foreground-new: var(--bz-accent);
-    --control-primary-background-default: var(--bz-accent);
-    --control-primary-background-hover: var(--bz-accent-hover);
-    --control-primary-background-active: var(--bz-accent-hover);
-    --control-primary-text-default: ${p.onAccent};
-    --control-primary-text-hover: ${p.onAccent};
-    --control-primary-text-active: ${p.onAccent};
-    --button-filled-brand-background: var(--bz-accent);
-    --button-filled-brand-background-hover: var(--bz-accent-hover);
-    --button-filled-brand-text: ${p.onAccent};
-
-    --border-subtle: ${p.border};
-    --border-normal: ${p.border};
-    --border-faint: ${p.border};
-    --border-strong: ${p.border};
-    --scrollbar-auto-thumb: ${p.hover};
-    --scrollbar-auto-track: transparent;
-    --scrollbar-thin-thumb: ${p.hover};
-    --scrollbar-thin-track: transparent;
-}
-
-::selection {
-    background: color-mix(in srgb, var(--bz-accent) 35%, transparent);
-}
-`;
-}
 
 function installedVersion(path: string) {
     try {
@@ -460,7 +403,18 @@ export function installBundledThemes(themesDir: string) {
         try {
             const current = existsSync(path) ? installedVersion(path) : null;
             if (current && !isNewer(theme.version, current)) continue;
-            writeFileSync(path, render(theme));
+            writeFileSync(
+                path,
+                renderTheme(
+                    {
+                        name: theme.name,
+                        author: AUTHOR,
+                        description: `${theme.description} Made by ${AUTHOR}.`,
+                        version: theme.version
+                    },
+                    theme.palette
+                )
+            );
         } catch (err) {
             console.error(`Failed to install bundled theme ${theme.name}:`, err);
         }

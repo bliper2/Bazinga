@@ -1,0 +1,45 @@
+.bz-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 8px;
+    max-height: 60vh;
+    padding-bottom: 12px;
+    overflow-y: auto;
+}
+
+.bz-gallery-note {
+    color: var(--text-muted);
+}
+
+.bz-gallery-item {
+    position: relative;
+    aspect-ratio: 1;
+    padding: 0;
+    overflow: hidden;
+    border: none;
+    border-radius: 8px;
+    background: var(--background-base-lowest, var(--background-tertiary));
+    cursor: pointer;
+}
+
+.bz-gallery-item img,
+.bz-gallery-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.bz-gallery-item:hover {
+    outline: 2px solid var(--brand-500);
+}
+
+.bz-gallery-badge {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: rgb(0 0 0 / 70%);
+    color: #fff;
+    font-size: 11px;
+}

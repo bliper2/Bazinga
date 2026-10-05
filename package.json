@@ -28,7 +28,9 @@
         "updateArrpcDB": "bun ./node_modules/arrpc-bun/scripts/update_db.ts",
         "postinstall": "bun updateArrpcDB && bun compileArrpc",
         "buildEquicord": "bun run scripts/build/buildEquicord.mts",
-        "test:unit": "bun test tests"
+        "test:unit": "bun test tests",
+        "docs": "bun run scripts/docs/generate.mts",
+        "docs:check": "bun run scripts/docs/generate.mts --check"
     },
     "dependencies": {
         "@types/ws": "^8.18.1",
